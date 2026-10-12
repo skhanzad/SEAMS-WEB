@@ -1,0 +1,1597 @@
+<meta charset="utf-8">
+<title>Coverage, Not Accuracy</title>
+<meta name="description" content="An interactive, equation-by-equation course on blind-spot overlap and the horizon of multi-agent verification.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,700;1,400&family=Atkinson+Hyperlegible+Mono:wght@400;600&display=swap">
+<style>
+/* Layout concept: an annotated manuscript. A reading column (~66ch) with a
+   reviewer's margin on the right for notes; interactive figures are instrument
+   panels spanning column + margin; a sticky contents rail on wide screens. */
+:root {
+  --bg: #f3f5f4;
+  --paper: #ffffff;
+  --ink: #141b21;
+  --ink-2: #45505a;
+  --muted: #69747f;
+  --rule: #dce1e5;
+  --rule-2: #c4ccd3;
+  --grid: #e7eaed;
+  --axis: #b9c2ca;
+  --pen: #c2362b;
+  --pen-wash: rgba(194, 54, 43, 0.09);
+  --hl: rgba(250, 204, 21, 0.34);
+  --link: #1b5fb8;
+  --thm: #fbfcfc;
+  --shadow: 0 1px 0 rgba(20, 30, 40, 0.03), 0 12px 28px -20px rgba(20, 30, 40, 0.28);
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+  --s5: #e87ba4; --s6: #008300; --s7: #4a3aa7; --s8: #e34948;
+  --good: #0ca30c; --crit: #d03b3b;
+  --font-display: "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-body: "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-ui: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Atkinson Hyperlegible Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --fs-body: 19px;
+  --fs-ui: 14.5px;
+  --fs-small: 13px;
+  --fs-micro: 11.5px;
+  --text-col: 690px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1215; --paper: #161b20; --ink: #e8edf1; --ink-2: #b5bfc8; --muted: #8a96a2;
+    --rule: #252d34; --rule-2: #36414b; --grid: #222a31; --axis: #3c4853;
+    --pen: #ff7b6e; --pen-wash: rgba(255, 123, 110, 0.12); --hl: rgba(250, 204, 21, 0.2);
+    --link: #82b4ff; --thm: #12171b;
+    --shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 12px 28px -20px rgba(0, 0, 0, 0.7);
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+    --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1215; --paper: #161b20; --ink: #e8edf1; --ink-2: #b5bfc8; --muted: #8a96a2;
+  --rule: #252d34; --rule-2: #36414b; --grid: #222a31; --axis: #3c4853;
+  --pen: #ff7b6e; --pen-wash: rgba(255, 123, 110, 0.12); --hl: rgba(250, 204, 21, 0.2);
+  --link: #82b4ff; --thm: #12171b;
+  --shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 12px 28px -20px rgba(0, 0, 0, 0.7);
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+  --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+  color-scheme: dark;
+}
+
+/* ---------- base ---------- */
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: var(--fs-body); line-height: 1.62;
+  font-optical-sizing: auto; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  margin: 0;
+}
+a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; border-radius: 3px; }
+p { margin: 0 0 1em; }
+strong { font-weight: 650; }
+em { font-style: italic; }
+h1, h2, h3, h4 { font-family: var(--font-display); text-wrap: balance; margin: 0; font-weight: 500; }
+mark.hl { background: linear-gradient(transparent 52%, var(--hl) 52%); color: inherit; padding: 0 1px; }
+.ui { font-family: var(--font-ui); }
+var, .v { font-style: italic; font-family: var(--font-body); }
+code, .mono { font-family: var(--font-mono); font-size: 0.86em; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+/* ---------- top bar ---------- */
+.topbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom: 1px solid var(--rule);
+}
+.topbar-in {
+  display: flex; align-items: center; gap: 14px; height: 48px;
+  max-width: 1340px; margin-inline: auto; padding-inline: clamp(16px, 3vw, 32px);
+  font-family: var(--font-ui); font-size: var(--fs-small); color: var(--ink-2);
+}
+.brand { font-family: var(--font-display); font-size: 17px; color: var(--ink); text-decoration: none; white-space: nowrap; font-weight: 600; }
+.brand i { font-weight: 400; }
+.crumb { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1; color: var(--muted); }
+.toc-btn {
+  font: inherit; color: var(--ink); background: transparent; border: 1px solid var(--rule-2);
+  border-radius: 999px; padding: 4px 12px; cursor: pointer;
+}
+.progress { position: absolute; left: 0; bottom: -1px; height: 2px; width: 0; background: var(--pen); transition: width 0.1s linear; }
+
+/* ---------- page grid ---------- */
+.page {
+  display: grid; grid-template-columns: minmax(0, 1fr);
+  max-width: 1000px; margin-inline: auto; padding-inline: clamp(16px, 3vw, 32px);
+}
+.toc-rail { display: none; }
+@media (min-width: 1360px) {
+  .page { grid-template-columns: 220px minmax(0, 1000px); column-gap: 56px; max-width: 1340px; }
+  .toc-rail { display: block; }
+  .toc-btn { display: none; }
+}
+.main { min-width: 0; padding-bottom: 80px; }
+.flow > * { max-width: var(--text-col); }
+.flow > .sec, .flow > .part-head, .flow > .hero, .flow > .wide { max-width: none; }
+.sec > * { max-width: var(--text-col); }
+.sec > .fig, .sec > .wide, .sec > .map, .sec > .demo, .sec > .table-wrap, .sec.hero > * { max-width: none; }
+.sec.hero > .lede { max-width: 60ch; }
+.sec.hero > .sub { max-width: 34ch; }
+
+/* ---------- contents ---------- */
+.toc { font-family: var(--font-ui); font-size: var(--fs-small); line-height: 1.35; }
+.toc-rail .toc { position: sticky; top: 64px; max-height: calc(100vh - 80px); overflow-y: auto; padding: 24px 6px 40px 0; }
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc .tp { margin-top: 14px; color: var(--muted); font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: 0.08em; }
+.toc a { display: block; color: var(--ink-2); text-decoration: none; padding: 4px 8px; border-radius: 6px; }
+.toc a:hover { background: var(--pen-wash); color: var(--ink); }
+.toc a.on { color: var(--ink); background: var(--paper); box-shadow: inset 2px 0 0 var(--pen); font-weight: 700; }
+.toc-sheet {
+  position: fixed; inset: 0; z-index: 60; background: color-mix(in srgb, var(--bg) 70%, transparent);
+  display: flex; justify-content: flex-end;
+}
+.toc-sheet-in {
+  width: min(360px, 92vw); height: 100%; overflow-y: auto; background: var(--paper);
+  border-left: 1px solid var(--rule); padding: 16px 16px 40px; box-shadow: var(--shadow);
+  padding-top: calc(16px + env(safe-area-inset-top, 0px));
+}
+.toc-sheet-head { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-ui); margin-bottom: 8px; }
+
+/* ---------- hero ---------- */
+.hero { padding-block: 56px 24px; }
+.eyebrow {
+  font-family: var(--font-ui); font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--muted); margin-bottom: 18px; display: flex; flex-wrap: wrap; gap: 8px 18px;
+}
+.eyebrow span + span::before { content: ""; }
+.hero h1 {
+  font-size: clamp(46px, 8.4vw, 96px); line-height: 0.95; letter-spacing: -0.02em; font-weight: 650;
+  font-variation-settings: "opsz" 72;
+}
+.hero h1 .not { font-weight: 300; font-style: italic; color: var(--ink-2); }
+.hero h1 .not s { text-decoration: none; position: relative; }
+.hero h1 .not s::after {
+  content: ""; position: absolute; left: -2%; right: -2%; top: 54%; height: 0.07em; background: var(--pen);
+  transform: rotate(-2.5deg); border-radius: 2px; opacity: 0.9;
+}
+.hero .sub { font-size: clamp(20px, 2.4vw, 26px); font-style: italic; color: var(--ink-2); margin: 18px 0 0; max-width: 34ch; line-height: 1.3; }
+.hero .lede { font-size: 20px; max-width: 60ch; margin-top: 22px; }
+.howto {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px 22px;
+  font-family: var(--font-ui); font-size: var(--fs-small); color: var(--ink-2); margin-top: 26px; max-width: 900px;
+}
+.howto div { border-top: 1px solid var(--rule-2); padding-top: 8px; }
+.howto b { display: block; color: var(--ink); font-size: var(--fs-ui); margin-bottom: 2px; }
+
+/* ---------- parts & sections ---------- */
+.part-head { margin: 96px 0 28px; padding-top: 22px; border-top: 2px solid var(--ink); display: grid; gap: 6px; }
+.part-head .pn { font-family: var(--font-ui); font-size: var(--fs-micro); letter-spacing: 0.12em; text-transform: uppercase; color: var(--pen); font-weight: 700; }
+.part-head h2 { font-size: clamp(32px, 4.6vw, 48px); line-height: 1.05; letter-spacing: -0.01em; font-weight: 600; }
+.part-head p { font-size: 19px; color: var(--ink-2); max-width: 62ch; margin: 6px 0 0; }
+section.sec { padding-top: 34px; }
+.sec h3 { font-size: clamp(25px, 3vw, 32px); line-height: 1.15; margin-bottom: 6px; font-weight: 600; letter-spacing: -0.005em; }
+.ref {
+  display: inline-flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); font-size: 12px; color: var(--muted);
+  margin-bottom: 18px;
+}
+.ref span { border: 1px solid var(--rule-2); border-radius: 4px; padding: 1px 7px; white-space: nowrap; }
+.sec h4 { font-size: 22px; margin: 30px 0 10px; font-weight: 600; }
+.lead1 { font-size: 20.5px; line-height: 1.55; }
+
+/* margin notes */
+.side {
+  font-family: var(--font-ui); font-size: var(--fs-small); line-height: 1.5; color: var(--ink-2);
+  border-top: 1px solid var(--rule-2); padding-top: 8px; margin: 0 0 1.2em;
+}
+.side b.nl { display: block; font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: 0.1em; color: var(--pen); margin-bottom: 3px; }
+@media (min-width: 1080px) {
+  .sec > .side { float: right; clear: right; width: 250px; margin: 0.35em 0 1.2em; }
+}
+.fig, .part-head, .clear, .map, .thm-wide { clear: both; }
+
+/* ---------- theorem-like boxes ---------- */
+.thm {
+  background: var(--thm); border: 1px solid var(--rule); border-radius: 10px; padding: 18px 22px 8px; margin: 18px 0 24px;
+}
+.thm-h { font-family: var(--font-ui); font-size: var(--fs-small); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); font-weight: 700; margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.thm-h em { text-transform: none; letter-spacing: 0; font-weight: 400; font-style: normal; color: var(--ink-2); font-size: var(--fs-ui); }
+.thm-b { font-style: italic; }
+.thm-b mjx-container, .thm-b .anatomy dd { font-style: normal; }
+.thm ol.parts { padding-left: 0; list-style: none; margin: 0 0 1em; }
+.thm ol.parts li { margin-bottom: 0.5em; }
+.thm ol.parts b { font-style: normal; font-family: var(--font-ui); font-size: 0.82em; margin-right: 6px; }
+
+/* ---------- equations ---------- */
+.eq { display: flex; align-items: center; gap: 12px; margin: 6px 0; }
+.eq > mjx-container { flex: 1 1 auto; min-width: 0; overflow-x: auto; overflow-y: hidden; padding: 4px 0; margin: 0.4em 0 !important; }
+.eq-num { font-family: var(--font-ui); font-size: var(--fs-ui); color: var(--muted); flex: none; }
+mjx-container[display="true"] { margin: 0.6em 0; }
+mjx-container { color: var(--ink); }
+.eqx { margin: 8px 0 22px; }
+.eqx .eq.hl-1 .t-1, .eqx .eq.hl-2 .t-2, .eqx .eq.hl-3 .t-3, .eqx .eq.hl-4 .t-4,
+.eqx .eq.hl-5 .t-5, .eqx .eq.hl-6 .t-6, .eqx .eq.hl-7 .t-7, .eqx .eq.hl-8 .t-8 { fill: var(--pen); stroke: var(--pen); color: var(--pen); }
+.anatomy { margin: 4px 0 0; padding: 0; border-top: 1px solid var(--rule); }
+.anatomy .an {
+  display: grid; grid-template-columns: minmax(96px, max-content) minmax(0, 1fr); gap: 4px 18px; align-items: baseline;
+  padding: 7px 8px; border-bottom: 1px solid var(--rule); border-radius: 4px; cursor: default;
+}
+.anatomy .an:hover, .anatomy .an:focus-within, .anatomy .an.on { background: var(--hl); }
+.anatomy dt { margin: 0; font-size: 17px; }
+.anatomy dd { margin: 0; font-family: var(--font-ui); font-size: var(--fs-ui); color: var(--ink-2); line-height: 1.45; }
+.anat-cap { font-family: var(--font-ui); font-size: var(--fs-micro); color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin: 14px 0 4px; }
+@media (max-width: 560px) { .anatomy .an { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- callouts, quizzes, lists ---------- */
+.callout { border: 1px solid var(--rule-2); border-radius: 10px; padding: 14px 18px 4px; margin: 20px 0 26px; background: var(--paper); }
+.callout .ct { font-family: var(--font-ui); font-weight: 700; font-size: var(--fs-small); letter-spacing: 0.06em; text-transform: uppercase; color: var(--pen); margin-bottom: 6px; }
+details.why { border: 1px solid var(--rule); border-radius: 10px; padding: 10px 16px; margin: 16px 0 24px; background: var(--thm); }
+details.why > summary { cursor: pointer; font-family: var(--font-ui); font-size: var(--fs-ui); font-weight: 700; color: var(--ink); list-style-position: outside; }
+details.why[open] > summary { margin-bottom: 8px; }
+.quiz { margin: 26px 0 8px; }
+.quiz .qh { font-family: var(--font-ui); font-size: var(--fs-micro); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.quiz details { border-top: 1px solid var(--rule); padding: 10px 2px; }
+.quiz details:last-child { border-bottom: 1px solid var(--rule); }
+.quiz summary { cursor: pointer; font-size: 18px; }
+.quiz summary::marker { color: var(--pen); }
+.quiz .ans { font-family: var(--font-ui); font-size: var(--fs-ui); color: var(--ink-2); padding: 8px 0 2px 18px; line-height: 1.5; }
+ul.tight, ol.tight { padding-left: 1.2em; margin: 0 0 1.1em; }
+ul.tight li, ol.tight li { margin-bottom: 0.4em; }
+.assume { display: grid; gap: 12px; margin: 14px 0 22px; }
+.assume > div { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 14px; align-items: baseline; }
+.assume .tag { font-family: var(--font-mono); font-weight: 600; font-size: 15px; color: var(--pen); border: 1.5px solid var(--pen); border-radius: 5px; text-align: center; padding: 1px 0; }
+.assume b { font-family: var(--font-ui); font-size: var(--fs-ui); display: block; }
+.chip-flag, .chip-pass {
+  font-family: var(--font-ui); font-size: 0.72em; letter-spacing: 0.08em; font-weight: 700; padding: 1px 6px; border-radius: 4px; vertical-align: 1px;
+}
+.chip-flag { color: var(--pen); border: 1px solid var(--pen); }
+.chip-pass { color: var(--ink-2); border: 1px solid var(--rule-2); }
+
+/* stage diagram */
+.stage-diagram { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 18px 0 22px; counter-reset: st; }
+.stage-diagram > div { background: var(--paper); border: 1px solid var(--rule); border-radius: 8px; padding: 10px 12px; font-family: var(--font-ui); font-size: var(--fs-small); color: var(--ink-2); position: relative; }
+.stage-diagram > div b { display: block; color: var(--ink); font-size: var(--fs-ui); margin-bottom: 2px; }
+.stage-diagram > div .k { font-family: var(--font-mono); font-size: 11px; color: var(--pen); }
+
+/* map of the paper */
+.map { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 18px 0 8px; }
+@media (max-width: 900px) { .map { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .map { grid-template-columns: minmax(0, 1fr); } }
+.map-col h5 { font-family: var(--font-ui); font-size: var(--fs-micro); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; font-weight: 700; }
+.map-col a { display: block; text-decoration: none; color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 8px; padding: 9px 12px; margin-bottom: 8px; font-family: var(--font-ui); font-size: var(--fs-small); line-height: 1.35; }
+.map-col a:hover { border-color: var(--ink-2); }
+.map-col a span { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+
+/* claims list */
+.claims { list-style: none; padding: 0; margin: 10px 0 22px; display: grid; gap: 12px; }
+.claims li { display: grid; grid-template-columns: 116px minmax(0, 1fr); gap: 14px; align-items: baseline; border-top: 1px solid var(--rule); padding-top: 10px; }
+.claims li > b { font-family: var(--font-ui); font-size: var(--fs-small); text-transform: uppercase; letter-spacing: 0.06em; }
+@media (max-width: 560px) { .claims li { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+
+/* related work table & glossary */
+.table-wrap { overflow-x: auto; margin: 10px 0 22px; min-width: 0; max-width: 100%; }
+table.ref-t { border-collapse: collapse; width: 100%; font-family: var(--font-ui); font-size: var(--fs-small); line-height: 1.45; }
+table.ref-t th { text-align: left; font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; padding: 6px 10px 6px 0; border-bottom: 1px solid var(--rule-2); }
+table.ref-t td { padding: 8px 12px 8px 0; border-bottom: 1px solid var(--rule); vertical-align: top; color: var(--ink-2); }
+table.ref-t td:first-child { color: var(--ink); font-weight: 700; }
+table.gloss td:first-child { font-family: var(--font-body); font-weight: 400; font-size: 17px; white-space: nowrap; }
+.eq-index .eqx { border-top: 1px solid var(--rule); padding-top: 6px; margin: 0; }
+.eq-index p { font-family: var(--font-ui); font-size: var(--fs-small); color: var(--ink-2); margin: -4px 0 12px; }
+.onepage { counter-reset: op; list-style: none; padding: 0; margin: 12px 0; display: grid; gap: 10px; }
+.onepage li { counter-increment: op; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; align-items: baseline; }
+.onepage li::before { content: counter(op); font-family: var(--font-mono); color: var(--pen); font-weight: 600; text-align: right; }
+.conclusion-quote { font-size: 23px; line-height: 1.5; font-style: italic; border-left: 0; margin: 10px 0 18px; padding: 0; }
+.conclusion-quote b { font-style: normal; }
+.footer { margin-top: 70px; padding-top: 16px; border-top: 1px solid var(--rule); font-family: var(--font-ui); font-size: var(--fs-small); color: var(--muted); }
+
+/* ---------- figures (instrument panels) ---------- */
+.fig {
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; box-shadow: var(--shadow);
+  padding: clamp(14px, 2.4vw, 24px); margin: 30px 0 34px; position: relative;
+}
+.fig-head { display: grid; gap: 4px; margin-bottom: 14px; }
+.fig-num { font-family: var(--font-ui); font-size: var(--fs-micro); letter-spacing: 0.12em; text-transform: uppercase; color: var(--pen); font-weight: 700; }
+.fig-title { font-family: var(--font-display); font-size: 23px; font-weight: 600; line-height: 1.2; }
+.fig-desc { font-family: var(--font-ui); font-size: var(--fs-ui); color: var(--ink-2); line-height: 1.5; max-width: 80ch; margin: 2px 0 0; }
+.fig-foot { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--rule); font-family: var(--font-ui); font-size: var(--fs-small); color: var(--ink-2); display: grid; gap: 8px; }
+.fig-foot .try b { color: var(--ink); }
+.fig-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.fig-body { display: grid; gap: 16px; min-width: 0; }
+.fig-body > * { min-width: 0; }
+.fig-tables { display: grid; gap: 10px; }
+.fig-tables h6 { margin: 6px 0 0; font-family: var(--font-ui); font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+
+.row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.row3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+@media (max-width: 760px) { .row2, .row3 { grid-template-columns: minmax(0, 1fr); } }
+.row-side { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 18px; }
+@media (max-width: 760px) { .row-side { grid-template-columns: minmax(0, 1fr); } }
+.panel-title { font-family: var(--font-ui); font-size: var(--fs-small); font-weight: 700; color: var(--ink); margin: 0 0 2px; }
+.panel-sub { font-family: var(--font-ui); font-size: 12.5px; color: var(--muted); margin: 0 0 6px; line-height: 1.4; }
+
+/* controls */
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px 22px; align-items: end; }
+.ctl { display: grid; gap: 3px; font-family: var(--font-ui); min-width: 0; }
+.ctl label { display: flex; justify-content: space-between; gap: 10px; font-size: var(--fs-small); color: var(--ink-2); }
+.ctl output { font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 700; white-space: nowrap; }
+.ctl input[type=range] { width: 100%; margin: 4px 0 0; accent-color: var(--link); height: 22px; }
+.ctl .hint { font-size: 11.5px; color: var(--muted); }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg-label { font-family: var(--font-ui); font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); align-self: center; margin-right: 4px; }
+.btn, .seg button {
+  font-family: var(--font-ui); font-size: var(--fs-small); line-height: 1.2; color: var(--ink);
+  background: var(--paper); border: 1px solid var(--rule-2); border-radius: 999px; padding: 6px 12px; cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.btn:hover, .seg button:hover { border-color: var(--ink-2); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); font-weight: 700; }
+.btn.primary:hover { opacity: 0.88; }
+.btn:disabled { opacity: 0.45; cursor: default; }
+.btn.quiet { border-color: transparent; color: var(--link); padding-inline: 6px; }
+.btn.quiet:hover { text-decoration: underline; border-color: transparent; }
+.pop-ctl { display: grid; gap: 10px; border: 1px dashed var(--rule-2); border-radius: 10px; padding: 10px 12px 12px; }
+.pop-ctl .pop-h { font-family: var(--font-ui); font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 700; }
+
+/* readouts */
+.readouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0; border-top: 1px solid var(--rule); border-left: 1px solid var(--rule); border-radius: 0; }
+.ro { padding: 8px 12px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); font-family: var(--font-ui); min-width: 0; }
+.ro .rl { display: block; font-size: 12px; color: var(--muted); line-height: 1.3; }
+.ro .rv { display: block; font-size: 19px; font-weight: 700; color: var(--ink); line-height: 1.25; margin-top: 2px; overflow-wrap: anywhere; }
+.ro .rv small { font-size: 12px; font-weight: 400; color: var(--ink-2); }
+.ro.key .rv { color: var(--pen); }
+.status { font-family: var(--font-ui); font-size: var(--fs-ui); padding: 8px 12px; border-radius: 8px; display: flex; gap: 10px; align-items: baseline; }
+.status.ok { background: color-mix(in srgb, var(--good) 12%, transparent); }
+.status.bad { background: color-mix(in srgb, var(--crit) 12%, transparent); }
+.status .ic { font-weight: 700; flex: none; }
+.status.ok .ic { color: var(--good); }
+.status.bad .ic { color: var(--crit); }
+.say { font-family: var(--font-ui); font-size: var(--fs-ui); color: var(--ink-2); line-height: 1.5; margin: 0; }
+.say b { color: var(--ink); }
+
+/* plots */
+.plot-box { position: relative; width: 100%; min-width: 0; }
+svg.plot { display: block; width: 100%; height: auto; overflow: visible; font-family: var(--font-ui); touch-action: pan-y; }
+.plot .grid { stroke: var(--grid); stroke-width: 1; shape-rendering: crispEdges; }
+.plot .axis { stroke: var(--axis); stroke-width: 1; shape-rendering: crispEdges; }
+.plot .tick { fill: var(--muted); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.plot .axis-label { fill: var(--ink-2); font-size: 12.5px; }
+.plot .ln { fill: none; stroke: var(--c, var(--ink)); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.plot .ln.thin { stroke-width: 1.25; }
+.plot .ln.dash { stroke-dasharray: 5 4; stroke-width: 1.5; }
+.plot .ln.ctx { stroke: var(--rule-2); stroke-width: 1.5; }
+.plot .ln.halo { stroke-width: 7; stroke-opacity: 0.28; }
+.plot .ar { fill: var(--c, var(--ink)); fill-opacity: 0.12; stroke: none; }
+.plot .ar.solid { fill-opacity: 0.55; }
+.plot .ar.band { fill-opacity: 0.18; }
+.plot .dt { fill: var(--c, var(--ink)); stroke: var(--paper); stroke-width: 2; }
+.plot .dt.hollow { fill: var(--paper); stroke: var(--c, var(--ink)); stroke-width: 1.75; }
+.plot .ref { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 4; }
+.plot .ref.solid { stroke-dasharray: none; }
+.plot .ref.pen { stroke: var(--pen); }
+.plot .lbl { fill: var(--ink-2); font-size: 12px; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+.plot .lbl.strong { fill: var(--ink); font-weight: 700; }
+.plot .lbl.pen { fill: var(--pen); }
+.plot .lbl.small { font-size: 11px; }
+.plot .hit { fill: transparent; cursor: crosshair; outline: none; }
+.plot .hit:focus-visible { stroke: var(--link); stroke-width: 1.5; }
+.plot .cross { stroke: var(--ink-2); stroke-width: 1; pointer-events: none; }
+.plot .cross-dot { fill: var(--c, var(--ink)); stroke: var(--paper); stroke-width: 2; pointer-events: none; }
+.plot .bar { fill: var(--c, var(--s1)); }
+.plot .bar.soft { fill-opacity: 0.35; }
+.plot .forbid { fill: var(--pen); fill-opacity: 0.08; }
+.plot .stem { stroke: var(--c, var(--ink)); stroke-width: 2; }
+.plot .handle { fill: var(--paper); stroke: var(--s1); stroke-width: 2.5; cursor: ns-resize; }
+.plot .handle:hover, .plot .handle.drag { fill: var(--s1); }
+.plot .handle-hit { fill: transparent; cursor: ns-resize; }
+.plot .handle, .plot .handle-hit { touch-action: none; }
+.s1 { --c: var(--s1); } .s2 { --c: var(--s2); } .s3 { --c: var(--s3); } .s4 { --c: var(--s4); }
+.s5 { --c: var(--s5); } .s6 { --c: var(--s6); } .s7 { --c: var(--s7); } .s8 { --c: var(--s8); }
+.c-ink { --c: var(--ink); } .c-muted { --c: var(--muted); } .c-pen { --c: var(--pen); } .c-ctx { --c: var(--rule-2); }
+.c-good { --c: var(--good); } .c-crit { --c: var(--crit); }
+.plot-tip {
+  position: absolute; pointer-events: none; z-index: 6; background: var(--paper); border: 1px solid var(--rule-2);
+  border-radius: 8px; padding: 7px 10px; font: 12.5px/1.4 var(--font-ui); color: var(--ink-2); box-shadow: var(--shadow); min-width: 150px; max-width: 260px;
+}
+.tip-head { color: var(--muted); margin-bottom: 3px; font-variant-numeric: tabular-nums; }
+.tip-row { display: grid; grid-template-columns: 16px auto minmax(0, 1fr); gap: 7px; align-items: center; }
+.tip-row strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.tip-key { display: block; width: 14px; height: 2.5px; border-radius: 2px; background: var(--c, var(--ink)); }
+.tip-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--font-ui); font-size: 12.5px; color: var(--ink-2); }
+.lg-item { display: inline-flex; align-items: center; gap: 6px; }
+.lg-key { display: inline-block; width: 16px; height: 2.5px; border-radius: 2px; background: var(--c, var(--ink)); }
+.lg-rect { width: 11px; height: 11px; border-radius: 3px; opacity: 0.85; }
+.lg-band { width: 14px; height: 11px; border-radius: 3px; background: color-mix(in srgb, var(--c) 22%, transparent); border: 1px solid var(--c); }
+.lg-dot { width: 9px; height: 9px; border-radius: 50%; }
+.lg-dash { background: repeating-linear-gradient(90deg, var(--c) 0 4px, transparent 4px 7px); height: 2px; }
+.lg-wash { width: 14px; height: 11px; border-radius: 3px; background: var(--pen-wash); border: 1px solid color-mix(in srgb, var(--pen) 40%, transparent); }
+table.data { border-collapse: collapse; font-family: var(--font-ui); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+table.data th, table.data td { padding: 4px 10px; border-bottom: 1px solid var(--rule); text-align: right; white-space: nowrap; }
+table.data th { color: var(--muted); font-weight: 700; white-space: normal; vertical-align: bottom; }
+table.data td:first-child, table.data th:first-child { text-align: left; }
+
+/* hero demo */
+.demo { background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; box-shadow: var(--shadow); padding: clamp(14px, 2.4vw, 26px); margin-top: 34px; }
+.demo-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; align-items: end; margin-bottom: 16px; }
+.demo-top h2 { font-size: 24px; font-weight: 600; }
+.demo-top p { font-family: var(--font-ui); font-size: var(--fs-ui); color: var(--ink-2); margin: 4px 0 0; max-width: 66ch; }
+.demo-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+@media (max-width: 720px) { .fields { grid-template-columns: minmax(0, 1fr); } }
+.field-h { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; font-family: var(--font-ui); }
+.field-h b { font-size: var(--fs-ui); }
+.field-h span { font-size: 12px; color: var(--muted); }
+.field-sub { font-family: var(--font-ui); font-size: 12.5px; color: var(--ink-2); margin: 2px 0 8px; line-height: 1.4; min-height: 2.8em; }
+svg.field { display: block; width: 100%; height: auto; }
+.field .dz { transition: fill-opacity 0.35s, stroke-opacity 0.35s; }
+.field .dz.open { fill: var(--pen); stroke: none; }
+.field .dz.shut { fill: transparent; stroke: var(--rule-2); stroke-width: 1; }
+.field .dz.pop { animation: pop 0.6s ease-out; }
+@keyframes pop { 0% { stroke: var(--good); stroke-width: 3; } 100% { stroke: var(--rule-2); stroke-width: 1; } }
+.agents-row { display: flex; flex-wrap: wrap; gap: 4px; min-height: 14px; margin: 8px 0 2px; align-items: center; font-family: var(--font-ui); font-size: 12px; color: var(--muted); }
+.agent-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ink-2); display: inline-block; }
+.agent-dot.new { background: var(--good); }
+.field-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--rule); margin-top: 8px; }
+.field-stats .ro { border-right: 0; border-bottom: 0; padding: 8px 4px 0 0; }
+.field-stats .ro .rv { font-size: 18px; }
+.demo-chart { margin-top: 18px; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 22px; align-items: center; }
+@media (max-width: 760px) { .demo-chart { grid-template-columns: minmax(0, 1fr); } }
+.demo-verdict { font-family: var(--font-display); font-size: 21px; line-height: 1.4; }
+.demo-verdict .big { font-size: 40px; font-weight: 650; color: var(--pen); display: block; line-height: 1.05; margin-bottom: 4px; }
+.shade-key { display: flex; align-items: center; gap: 8px; font-family: var(--font-ui); font-size: 12px; color: var(--muted); }
+.shade-key .sw { display: inline-flex; gap: 2px; }
+.shade-key .sw i { width: 10px; height: 10px; background: var(--pen); display: inline-block; border-radius: 2px; }
+
+/* scopes figure */
+svg.scopes { display: block; width: 100%; height: auto; font-family: var(--font-ui); }
+.scopes .cell { stroke: var(--paper); stroke-width: 1.5; }
+.scopes .cell.on { fill: var(--s1); fill-opacity: 0.75; }
+.scopes .cell.off { fill: var(--grid); }
+.scopes .cell.click { cursor: pointer; }
+.scopes .cell.click:hover { fill-opacity: 1; stroke: var(--ink); }
+.scopes .rowlbl { fill: var(--ink-2); font-size: 13px; }
+.scopes .dbar { fill: var(--s1); }
+.scopes .dbar.zero { fill: var(--pen); }
+.scopes .pline { stroke: var(--s2); stroke-width: 2; }
+.scopes .base { stroke: var(--axis); }
+
+/* judgement matrix */
+svg.matrix { display: block; width: 100%; height: auto; font-family: var(--font-ui); }
+.matrix .f { fill: var(--ink); }
+.matrix .m { fill: var(--grid); }
+.matrix .vis { fill: var(--s1); }
+.matrix .lbl { fill: var(--muted); font-size: 11px; }
+
+/* pipeline strip */
+.pipe { display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-ui); }
+.stg { width: 44px; height: 54px; border: 1px solid var(--rule-2); border-radius: 7px; position: relative; display: grid; place-items: center; font-size: 11px; color: var(--muted); background: var(--paper); transition: background 0.2s, border-color 0.2s; }
+.stg .n { position: absolute; top: 3px; left: 5px; font-size: 10px; }
+.stg .mk { font-size: 17px; font-weight: 700; margin-top: 8px; }
+.stg .eyes { position: absolute; bottom: 4px; left: 0; right: 0; display: flex; justify-content: center; gap: 2px; flex-wrap: wrap; padding: 0 3px; }
+.stg .eyes i { width: 5px; height: 5px; border-radius: 50%; background: var(--rule-2); display: block; }
+.stg .eyes i.fl { background: var(--good); }
+.stg.cur { border-color: var(--ink); }
+.stg.bug { background: var(--pen-wash); border-color: var(--pen); }
+.stg.bug .mk { color: var(--pen); }
+.stg.fixed { border-color: var(--good); }
+.stg.fixed .mk { color: var(--good); }
+.stg.clean .mk { color: var(--muted); }
+.pipe-verdict { font-family: var(--font-ui); font-size: var(--fs-ui); min-height: 1.5em; }
+
+/* teams matrix */
+svg.teams { display: block; width: 100%; height: auto; font-family: var(--font-ui); }
+.teams .q { fill: var(--s1); }
+.teams .row-bg { fill: transparent; cursor: pointer; }
+.teams .row-bg:hover { fill: var(--pen-wash); }
+.teams .row-bg.sel { fill: color-mix(in srgb, var(--s1) 10%, transparent); }
+.teams .nm { fill: var(--ink-2); font-size: 11.5px; }
+.teams .nm.sel { fill: var(--ink); font-weight: 700; }
+.teams .accbar { fill: var(--muted); fill-opacity: 0.5; }
+.teams .missfill { fill: var(--pen); fill-opacity: 0.8; }
+.teams .misscol { fill: var(--grid); }
+.teams .tick { fill: var(--muted); font-size: 11px; }
+.teams .selmark { fill: var(--ink); }
+
+/* text areas */
+textarea.data-in { width: 100%; min-height: 90px; font-family: var(--font-mono); font-size: 13px; color: var(--ink); background: var(--bg); border: 1px solid var(--rule-2); border-radius: 8px; padding: 8px 10px; resize: vertical; box-sizing: border-box; }
+.inline-in { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-family: var(--font-ui); font-size: var(--fs-small); }
+.inline-in input[type=number] { width: 70px; font: inherit; padding: 4px 6px; border: 1px solid var(--rule-2); border-radius: 6px; background: var(--bg); color: var(--ink); }
+.hausdorff { overflow-x: auto; min-width: 0; max-width: 100%; }
+.hausdorff table { border-collapse: collapse; font-family: var(--font-ui); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.hausdorff th, .hausdorff td { padding: 3px 6px; border: 1px solid var(--rule); text-align: right; min-width: 38px; font-size: 12px; }
+.hausdorff th { color: var(--muted); font-weight: 700; background: var(--thm); }
+.hausdorff td.neg { background: color-mix(in srgb, var(--crit) 16%, transparent); color: var(--ink); font-weight: 700; }
+.hausdorff td.na { color: var(--rule-2); }
+.noscript { font-family: var(--font-ui); color: var(--pen); }
+</style>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="#start">Coverage, <i>not accuracy</i></a>
+    <span class="crumb" id="crumb" aria-live="off">Start</span>
+    <button class="toc-btn" id="toc-open" type="button" aria-expanded="false" aria-controls="toc-sheet">Contents</button>
+  </div>
+  <div class="progress" id="progress"></div>
+</header>
+
+<div class="toc-sheet" id="toc-sheet" hidden>
+  <div class="toc-sheet-in" role="dialog" aria-label="Contents">
+    <div class="toc-sheet-head"><b>Contents</b><button class="btn" type="button" id="toc-close">Close</button></div>
+    <nav class="toc" id="toc-mobile"></nav>
+  </div>
+</div>
+
+<div class="page">
+  <aside class="toc-rail" aria-label="Contents">
+    <nav class="toc" id="toc">
+      <ol>
+        <li><a href="#start">Start: two teams</a></li>
+        <li class="tp">Introduction</li>
+        <li><a href="#question">The question</a></li>
+        <li><a href="#map">Map of the paper</a></li>
+        <li><a href="#related">Where the ideas come from</a></li>
+        <li class="tp">I · The model</li>
+        <li><a href="#defects">Defects, agents, Δ</a></li>
+        <li><a href="#exchangeable">Exchangeable teams</a></li>
+        <li><a href="#misscurve">The miss curve</a></li>
+        <li><a href="#pipelines">Pipelines A1–A3</a></li>
+        <li class="tp">II · What verification buys</li>
+        <li><a href="#scrutiny">Scrutiny bound</a></li>
+        <li><a href="#shape">Shape of the curve</a></li>
+        <li><a href="#horizon">Horizon law</a></li>
+        <li><a href="#regimes">Regimes and a = 1</a></li>
+        <li><a href="#separation">Accuracy misleads</a></li>
+        <li><a href="#rereview">Re-reviewing everything</a></li>
+        <li><a href="#teamsize">When to stop adding</a></li>
+        <li class="tp">III · Measuring</li>
+        <li><a href="#calibration">Calibration and error bars</a></li>
+        <li><a href="#identification">What data can't tell you</a></li>
+        <li class="tp">IV · Choosing</li>
+        <li><a href="#selection">Choose for coverage</a></li>
+        <li class="tp">V · Evidence</li>
+        <li><a href="#experiments">The testbeds</a></li>
+        <li class="tp">VI · Using it</li>
+        <li><a href="#protocol">Measurement protocol</a></li>
+        <li><a href="#scope">Scope and reading results</a></li>
+        <li><a href="#conclusion">Conclusion</a></li>
+        <li class="tp">Reference</li>
+        <li><a href="#glossary">Symbols</a></li>
+        <li><a href="#equations">All twelve equations</a></li>
+        <li><a href="#onepage">The paper on one page</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main class="main" id="main">
+  <div class="flow">
+
+  <!-- ============================== HERO ============================== -->
+  <section class="hero sec" id="start" data-crumb="Start">
+    <div class="eyebrow"><span>An interactive course</span><span>AAMAS 2027 submission</span><span>12 equations · 16 interactive figures</span></div>
+    <h1>Coverage, <span class="not"><s>not accuracy</s></span></h1>
+    <p class="sub">Blind-spot overlap bounds the horizon of multi-agent verification</p>
+    <p class="lede">When AI agents check one another's work, the usual fix for unreliability is to add another checker. This course works through a paper arguing that the extra checker pays off only when it can see what the others miss. It covers every definition, theorem and equation in order, leaves the proofs to the paper, and pairs each idea with a simulation you can run.</p>
+
+    <div class="demo" id="hero-demo" data-fig="hero">
+      <div class="demo-top">
+        <div>
+          <h2>Two teams with identical per-agent accuracy</h2>
+          <p>Each square is a defect hidden in some work. Its shade shows how visible it is to a single agent. On both teams every agent catches half of all defects on average. Add agents and watch what stays uncaught.</p>
+        </div>
+        <div class="demo-actions" id="hero-actions"></div>
+      </div>
+      <div class="fig-body"></div>
+    </div>
+
+    <div class="howto">
+      <div><b>Plain words first</b>Each section opens with the idea before the formula.</div>
+      <div><b>Equations, term by term</b>Hover a row under an equation to light up that term.</div>
+      <div><b>Live figures</b>Every figure computes from the paper's formulas or simulates the process.</div>
+      <div><b>Check yourself</b>Short questions with answers close each section.</div>
+    </div>
+  </section>
+
+  <!-- ============================== INTRO ============================== -->
+  <div class="part-head" id="intro">
+    <span class="pn">Introduction · §1–2</span>
+    <h2>Why adding agents is a bet</h2>
+    <p>The paper's question, its one central curve, and where the idea comes from.</p>
+  </div>
+
+  <section class="sec" id="question" data-crumb="The question">
+    <h3>The question</h3>
+    <div class="ref"><span>§1</span><span>§1.1 Summary of contributions</span></div>
+
+    <p class="lead1">When a team of agents is unreliable, the reflex is to add another agent. A second reviewer, a debate round, a larger jury, a re-check before release: each is the same bet, that independent opinions accumulate into confidence.</p>
+    <p>Agent teams built from language models make this bet constantly. Planner, coder, debugger and reviewer inspect one another's artifacts, and the pipeline is trusted because several agents agreed.</p>
+    <p class="side"><b class="nl">Vocabulary</b>An <em>artifact</em> is whatever the team produces: a plan, a program, a report. A <em>defect</em> is a real violation of its specification.</p>
+    <p>The record is contradictory. Ensembles and debate sometimes help a lot and sometimes not at all. The value of multi-agent structure varies with model, task and architecture. Failure taxonomies place many breakdowns in verification and hand-off rather than in an isolated model call.</p>
+    <p>The oldest warning is also the sharpest. In 1986, Knight and Leveson had programmers independently write versions of the same program from one specification. The versions failed on the <em>same inputs</em> far more often than independence would predict. Checkers that are built separately can still share blind spots.</p>
+    <p>The paper treats this as an organisational question: <mark class="hl">who watches what, how much the agents' fields of view overlap, and how a team should be composed.</mark> It turns that into a measurement by treating the population of verifying agents as a statistical object and asking what <em>any</em> protocol built on it can guarantee, however the protocol is designed.</p>
+
+    <h4>One curve</h4>
+    <p>The answer turns on a single curve. Let a defect be described by a hidden state \(\theta\) that captures which defect occurred and how visible it is. Let \(\Delta(\theta)\) be the probability that a randomly drawn agent's judgement changes depending on whether the defect is present. The population's <em>miss curve</em> is</p>
+    <div class="eq">\[ M(k)=\E_\theta\bigl[(1-\Delta(\theta))^{k}\bigr], \]</div>
+    <p>the chance that \(k\) independent judgements are all uninformative. No protocol spending \(k\) judgements on a defect can achieve a detection rate minus false-alarm rate above \(1-M(k)\), whatever it does with them. Its doubling rate</p>
+    <div class="eq">\[ a(k)=\log_2\frac{M(k)}{M(2k)} \]</div>
+    <p>measures how much doubling the team improves coverage. The paper calls it the <em>coverage exponent</em>, and it is the quantity that matters.</p>
+
+    <h4>What the paper shows</h4>
+    <ul class="claims">
+      <li><b>Horizon</b><span>If each stage of a pipeline introduces a defect with probability \(\beta\), risk stays below \(\varepsilon\) only up to depth \(n^*\approx\varepsilon/(\beta M(k))\). When \(M(k)\) decays like \(k^{-a}\), safe depth grows like \(k^{a}\), and verifying a task of depth \(n\) costs \(\Theta(n^{1+1/a})\) judgements. A blind-spot mass \(\pi_0\) caps the depth near \(\varepsilon/(\beta\pi_0)\) for any team.</span></li>
+      <li><b>Accuracy</b><span>Two populations can share the same average per-agent detection rate yet support arbitrarily different safe depths. Mean verifier accuracy says nothing about what a pool can certify.</span></li>
+      <li><b>Transition at a = 1</b><span>Above \(a=1\), each added agent buys more horizon than the last, and re-reviewing everything can keep a pipeline clean forever. Below it, neither works, and no team size moves a population across the line.</span></li>
+      <li><b>Measuring</b><span>Calibrating with \(k\) agents pins down \(M(1),\dots,M(k)\) and nothing beyond. No finite calibration can establish that a blind spot exists, though its size can be bounded from above.</span></li>
+      <li><b>Choosing</b><span>Pick teams for coverage \(\Lambda(S)=\log 1/M(S)\), not individual accuracy. Keeping the \(k\) most accurate agents can be exactly \(k\) times worse.</span></li>
+      <li><b>Evidence</b><span>Two executable testbeds reproduce every prediction. Populations matched on per-agent accuracy differ in horizon by 15×.</span></li>
+    </ul>
+  </section>
+
+  <section class="sec" id="map" data-crumb="Map of the paper">
+    <h3>Map of the paper</h3>
+    <div class="ref"><span>how the results depend on each other</span></div>
+    <p>Each column builds on the one to its left. Click any box to jump there.</p>
+    <div class="map">
+      <div class="map-col"><h5>1 · The object</h5>
+        <a href="#defects">Defects, agents, \(\Delta(\theta)\)<span>Eq. (1)</span></a>
+        <a href="#exchangeable">Random teams as coin flips<span>Lemma 3.1</span></a>
+        <a href="#misscurve">Miss curve \(M(k)\), \(\pi_0\), \(a(k)\)<span>Definition 3.2 · Eqs. (2)–(3)</span></a>
+        <a href="#pipelines">Pipelines and A1–A3<span>§3.2</span></a>
+      </div>
+      <div class="map-col"><h5>2 · The ceiling</h5>
+        <a href="#scrutiny">No protocol beats \(1-M(k)\)<span>Theorem 4.1 · Eq. (4)</span></a>
+        <a href="#shape">Every miss curve saturates<span>Proposition 4.2</span></a>
+        <a href="#horizon">Horizon \(\approx\varepsilon/\beta M(k)\)<span>Theorem 4.3 · Eqs. (5)–(6)</span></a>
+      </div>
+      <div class="map-col"><h5>3 · Consequences</h5>
+        <a href="#regimes">Blind-spot cap, \(k^a\), \(a=1\)<span>Corollary 4.4</span></a>
+        <a href="#separation">Accuracy is uninformative<span>Theorem 4.5</span></a>
+        <a href="#rereview">Re-review can't fix the population<span>Theorem 4.6 · Eq. (7)</span></a>
+        <a href="#teamsize">A finite best team size<span>§4.5 · Eqs. (8)–(10)</span></a>
+      </div>
+      <div class="map-col"><h5>4 · In practice</h5>
+        <a href="#calibration">Error bars on \(a\)<span>§5 · Eq. (11)</span></a>
+        <a href="#identification">Limits of extrapolation<span>Theorem 5.1 · Corollary 5.2 · Eq. (12)</span></a>
+        <a href="#selection">Choosing who verifies<span>Propositions 6.1–6.2</span></a>
+        <a href="#experiments">Testbeds and results<span>§7</span></a>
+        <a href="#protocol">A measurement protocol<span>§8</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="related" data-crumb="Where the ideas come from">
+    <h3>Where the ideas come from</h3>
+    <div class="ref"><span>§2 Related work</span></div>
+    <p>The paper's basic object is old. Its contribution is everything built on it. The table lists each line of prior work and what the paper takes from it or adds to it.</p>
+    <div class="table-wrap">
+      <table class="ref-t">
+        <thead><tr><th>Line of work</th><th>What it found</th><th>How the paper uses it</th></tr></thead>
+        <tbody>
+          <tr><td>LLM agent teams</td><td>Role-structured teams (ChatDev, MetaGPT, AutoGen, AgentVerse), self-critique (Reflexion, Self-Refine) and repository-scale benchmarks (SWE-bench, SWE-agent).</td><td>Motivates the setting: agents checking each other's artifacts.</td></tr>
+          <tr><td>Debate and ensembles</td><td>Mixed results. Failure studies (MAST) locate many breakdowns in verification and hand-off. Models from different developers make the same errors more often than chance, and judge–model similarity can undermine oversight.</td><td>The paper offers a statistic, measurable from one calibration set, that predicts which way a deployment falls.</td></tr>
+          <tr><td>N-version programming</td><td>Knight and Leveson (1986): independently written versions fail together far more than independence predicts.</td><td>The original evidence that separately built checkers share blind spots.</td></tr>
+          <tr><td>Difficulty function</td><td>Eckhardt and Lee (1985): a latent, input-indexed probability that a random version fails. Its variance is what makes versions fail together.</td><td>\(\Delta(\theta)\) is this object, moved from inputs to defects and from program versions to verifying agents. \(M(k)\) is its \(k\)-th moment.</td></tr>
+          <tr><td>Forced diversity</td><td>Littlewood and Miller (1989): deliberately diverse designs can make failures negatively correlated and beat independence.</td><td>The escape hatch from the scrutiny bound, formalised as team selection (§6).</td></tr>
+          <tr><td>Common-cause failure</td><td>Reliability engineering summarises failure coupling with one parameter (beta-factor models).</td><td>The paper replaces one coupling number with a whole curve.</td></tr>
+          <tr><td>Ensemble diversity</td><td>Regression error splits exactly into accuracy minus diversity (Krogh and Vedelsby), but for classification no single diversity measure reliably predicts ensemble gain (Kuncheva and Whitaker).</td><td>The miss curve is the diversity summary that does predict what verification can guarantee.</td></tr>
+          <tr><td>LLM juries and verifiers</td><td>Panels of diverse LLM judges are recommended because one judge's biases are shared (Verga et al.). Repeated sampling against an imperfect verifier hits a ceiling set by its false positives (Stroebl et al.).</td><td>The second is the \(k=1\), \(n=1\) corner of the theory.</td></tr>
+          <tr><td>Capture–recapture</td><td>Estimating how many faults inspectors missed (Eick et al.), from species-richness estimation (Chao; Good).</td><td>The paper asks how deep a pipeline the population supports, and shows extrapolation is only partially identified.</td></tr>
+          <tr><td>Populations of coins</td><td>Learning the distribution of many Bernoulli parameters from a few flips each (Tian, Kong and Valiant; Kong and Valiant): moment estimators are only as fine as the flips per item.</td><td>Theorem 5.1 states the same limit as a sharp identified set. Unseen-species extrapolation (Orlitsky et al.) targets a different quantity and does not conflict.</td></tr>
+          <tr><td>Submodular selection</td><td>Greedy coverage gets \((1-1/e)\) of optimal (Nemhauser et al.), used for sensor placement (Krause et al.).</td><td>That guarantee does not transfer to horizon. The paper gives the condition under which one does.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============================== PART I ============================== -->
+  <div class="part-head" id="part1">
+    <span class="pn">Part I · §3</span>
+    <h2>The model: populations, judgements, horizons</h2>
+    <p>Four objects carry the whole paper: defects with a hidden state, agents drawn from a population, the miss curve, and pipelines. The key fact is that the miss curve is a sequence of moments.</p>
+  </div>
+
+  <section class="sec" id="defects" data-crumb="Defects, agents, Δ">
+    <h3>Defects, agents and discriminative power</h3>
+    <div class="ref"><span>§3.1</span><span>Eq. (1)</span></div>
+
+    <p>A <strong>defect</strong> is a real violation of the specification, introduced at some stage of work. Which defect occurred, and everything about the world that decides how visible it is, is summarised by a hidden variable \(\theta\) in a set \(\Theta\). Nature draws \(\theta\) from a distribution \(\mu\), fixed by the generator and the environment.</p>
+    <p class="side"><b class="nl">Example</b>In the paper's plan-verification testbed, \(\theta\) says which requirement a slip violates. In the program testbed, it says which mutation was introduced.</p>
+    <p>A <strong>verifier agent</strong> \(v\) is any procedure that emits a binary judgement about an artifact: <span class="chip-flag">FLAG</span> or <span class="chip-pass">PASS</span>. Agents are drawn from a <strong>design distribution</strong> \(\cD\) over prompts, personas, scopes, test-input strategies, random seeds, or whole models. Given \(\theta\), agent \(v\) flags the defective artifact with probability \(q_v(\theta)\) and its corrected counterpart with probability \(p_v(\theta)\), independently across repeated judgements. Averaging over the agents you might draw:</p>
+
+    <div class="eqx">
+      <div class="eq">\[ \class{t-1}{Q(\theta)}=\class{t-4}{\E_{v\sim\cD}}\,q_v(\theta),\qquad \class{t-2}{P(\theta)}=\E_{v\sim\cD}\,p_v(\theta),\qquad \class{t-3}{\Delta=|Q-P|} \]<span class="eq-num">(1)</span></div>
+      <dl class="anatomy">
+        <div class="an" data-t="1" tabindex="0"><dt>\(Q(\theta)\)</dt><dd>Flag rate on the <em>defective</em> artifact, averaged over agents. A random agent's chance of catching this defect.</dd></div>
+        <div class="an" data-t="2" tabindex="0"><dt>\(P(\theta)\)</dt><dd>Flag rate on the <em>corrected</em> artifact. A random agent's false-alarm rate on the fixed version.</dd></div>
+        <div class="an" data-t="3" tabindex="0"><dt>\(\Delta=|Q-P|\)</dt><dd><b>Discriminative power</b> at \(\theta\): how much the presence of the defect moves one random agent's verdict.</dd></div>
+        <div class="an" data-t="4" tabindex="0"><dt>\(\E_{v\sim\cD}\)</dt><dd>Average over the design distribution, that is, over which agent you happen to draw.</dd></div>
+      </dl>
+    </div>
+
+    <p>Why the difference rather than \(Q\) alone? An agent that flags 30% of artifacts no matter what has \(Q=P=0.3\) and \(\Delta=0\). It is busy, but its flags carry no information about this defect. <mark class="hl">\(\Delta\) measures information, not activity.</mark> When agents are <em>sound</em>, meaning they never flag correct work (\(p_v\equiv 0\)), \(\Delta=Q\).</p>
+    <p>Notice that \(\Delta\) is a function of \(\theta\). The same population can see some defects easily and others hardly at all. That spread across defects, not the average, will decide how fast a team's misses fall.</p>
+
+    <figure class="fig" id="fig-scopes" data-fig="scopes">
+      <figcaption class="fig-head">
+        <span class="fig-num">Figure 1 · Eq. (1)</span>
+        <span class="fig-title">From agents' scopes to \(\Delta(\theta)\)</span>
+        <p class="fig-desc">A toy version of the paper's plan-verification testbed. There are 36 requirements a defect could violate (the columns, \(\theta\)). An agent is drawn by picking one of six role templates; each template checks only the requirements in its scope (blue). Inside its scope an agent catches a violation with probability <var>s</var>; any agent false-alarms with probability <var>p</var>. All three presets give every template the same scope size, so per-agent accuracy is identical. Click cells to edit scopes.</p>
+      </figcaption>
+      <div class="fig-body"></div>
+      <div class="fig-foot"><div class="try"><b>Try this:</b> switch between <em>Siloed</em> and <em>Diverse</em>. The average accuracy readout does not move, but the \(\Delta\) histogram and the team miss rates change completely. Then raise the false-alarm rate <var>p</var> and watch \(\Delta=Q-P\) shrink even though agents flag more.</div></div>
+    </figure>
+
+    <div class="quiz"><div class="qh">Check yourself</div>
+      <details><summary>An agent flags 40% of defective artifacts and 40% of their corrected versions. How much does it contribute to \(\Delta\)?</summary><div class="ans">Nothing. Its verdict does not depend on whether the defect is present, so \(q_v-p_v=0\). Its flags are noise.</div></details>
+      <details><summary>Can one population have very different \(\Delta(\theta)\) for different defects?</summary><div class="ans">Yes, and that variation is the point. In Figure 1 a requirement covered by many templates has high \(\Delta\), and one covered by none has \(\Delta=0\).</div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="exchangeable" data-crumb="Exchangeable teams">
+    <h3>A random team behaves like one coin flipped \(k\) times</h3>
+    <div class="ref"><span>§3.1</span><span>Lemma 3.1</span></div>
+
+    <div class="thm">
+      <div class="thm-h">Lemma 3.1 <em>Exchangeable reduction</em></div>
+      <div class="thm-b"><p>If a team consists of \(k\) agents drawn i.i.d. from \(\cD\), then conditional on \(\theta\) their judgements are i.i.d. \(\mathrm{Bernoulli}(Q(\theta))\) on the defective artifact and i.i.d. \(\mathrm{Bernoulli}(P(\theta))\) on the corrected one. Conversely, any infinite exchangeable population of binary judgements admits this representation.</p></div>
+    </div>
+
+    <p>In words: once you know which defect you are looking at, a randomly drawn team of \(k\) agents behaves like \(k\) flips of a single coin whose bias is \(Q(\theta)\). Which agents exactly were drawn no longer matters. Randomness enters in two stages: nature picks the defect, then the coin is flipped \(k\) times.</p>
+    <p>This has a consequence that drives the whole paper. <mark class="hl">Verdicts are independent given \(\theta\), but not independent overall.</mark> If agent 1 missed a defect, that is evidence the defect is a hard one, so agent 2 is more likely to miss it too. For sound agents the excess is exactly a variance across defects:</p>
+    <div class="eq">\[ \Pr[\text{both miss}]-\Pr[\text{miss}]^2 \;=\; M(2)-M(1)^2 \;=\; \operatorname{Var}\bigl(1-\Delta(\theta)\bigr)\;\ge 0. \]</div>
+    <p>Agents fail together exactly as much as defects differ in visibility. This is Eckhardt and Lee's difficulty-function argument from software reliability, moved from program versions to verifiers.</p>
+    <p class="side"><b class="nl">Exchangeable</b>A sequence is exchangeable if relabelling its members never changes the joint statistics. Agents drawn at random from one design distribution are exchangeable by construction.</p>
+    <p>The converse direction is de Finetti's theorem. It means the representation is not a modelling assumption about how agents work: any exchangeable population of verdicts looks like this. Nothing here assumes agents are accurate, honest, distinct, or differently built. 240 copies of one agent with different seeds is a legitimate \(\cD\), and so is a mixture of humans and programs.</p>
+
+    <figure class="fig" id="fig-matrix" data-fig="matrix">
+      <figcaption class="fig-head">
+        <span class="fig-num">Figure 2 · Lemma 3.1</span>
+        <span class="fig-title">Independent given the defect, correlated across defects</span>
+        <p class="fig-desc">Each column is a defect, sorted by how visible it is (top bar, \(\Delta\)). Each row is one of 8 agents drawn at random from the population. A dark cell is a <span class="chip-flag">FLAG</span>. Within a column the verdicts are independent coin flips with that column's bias; across columns the bias changes, which makes agents' rows look alike.</p>
+      </figcaption>
+      <div class="fig-body"></div>
+      <div class="fig-foot"><div class="try"><b>Try this:</b> compare <em>Homogeneous</em> with <em>All-or-nothing</em>. Both have per-agent accuracy 0.5. In the first, misses are scattered; in the second, whole columns are empty. The readout \(M(2)\) against \(M(1)^2\) measures exactly this clustering.</div></div>
+    </figure>
+
+    <div class="quiz"><div class="qh">Check yourself</div>
+      <details><summary>Two agents drawn from the same population judge the same defect. Are their verdicts independent?</summary><div class="ans">Given the defect, yes. Across defects, no: they are positively correlated, because both depend on how visible the defect is. The covariance of their misses is \(\operatorname{Var}(1-\Delta)\).</div></details>
+      <details><summary>When would two random agents' misses be uncorrelated?</summary><div class="ans">When every defect is equally visible (\(\Delta\) constant). Then \(\operatorname{Var}(1-\Delta)=0\) and \(M(2)=M(1)^2\).</div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="misscurve" data-crumb="The miss curve">
+    <h3>The miss curve, the blind spot and the coverage exponent</h3>
+    <div class="ref"><span>§3.1</span><span>Definition 3.2</span><span>Eqs. (2)–(3)</span></div>
+
+    <div class="thm">
+      <div class="thm-h">Definition 3.2 <em>Miss curve, blind-spot mass, coverage exponent</em></div>
+      <div class="thm-b">
+        <div class="eqx">
+          <div class="eq">\[ \class{t-1}{M(k)}=\class{t-3}{\E_\theta}\bigl[\class{t-2}{(1-\Delta(\theta))^{k}}\bigr],\qquad \class{t-4}{\pi_0=\Pr[\Delta(\theta)=0]} \]<span class="eq-num">(2)</span></div>
+          <dl class="anatomy">
+            <div class="an" data-t="2" tabindex="0"><dt>\((1-\Delta(\theta))^{k}\)</dt><dd>For one defect: the chance that \(k\) independent judgements are all unmoved by it. For sound agents, the chance all \(k\) miss it.</dd></div>
+            <div class="an" data-t="3" tabindex="0"><dt>\(\E_\theta[\,\cdot\,]\)</dt><dd>Average over which defect occurred, \(\theta\sim\mu\).</dd></div>
+            <div class="an" data-t="1" tabindex="0"><dt>\(M(k)\)</dt><dd>The <b>miss curve</b>: the chance a random defect slips past \(k\) random agents.</dd></div>
+            <div class="an" data-t="4" tabindex="0"><dt>\(\pi_0\)</dt><dd>The <b>blind-spot mass</b>: the share of defects no agent in the population can ever see.</dd></div>
+          </dl>
+        </div>
+        <div class="eqx">
+          <div class="eq">\[ \class{t-1}{a(k)}=\class{t-2}{\log_2}\class{t-3}{\frac{M(k)}{M(2k)}},\qquad \class{t-4}{\Lambda(k)=\log\frac{1}{M(k)}} \]<span class="eq-num">(3)</span></div>
+          <dl class="anatomy">
+            <div class="an" data-t="3" tabindex="0"><dt>\(\dfrac{M(k)}{M(2k)}\)</dt><dd>How many times fewer defects slip through when the team doubles from \(k\) to \(2k\).</dd></div>
+            <div class="an" data-t="2" tabindex="0"><dt>\(\log_2\)</dt><dd>Turns that factor into an exponent, so that \(M(2k)=M(k)/2^{a(k)}\).</dd></div>
+            <div class="an" data-t="1" tabindex="0"><dt>\(a(k)\)</dt><dd>The <b>coverage exponent</b> (doubling exponent) at team size \(k\).</dd></div>
+            <div class="an" data-t="4" tabindex="0"><dt>\(\Lambda(k)\)</dt><dd>Coverage on a log scale. The safe pipeline depth is proportional to \(1/M(k)=e^{\Lambda(k)}\).</dd></div>
+          </dl>
+        </div>
+        <p>We write \(M_Q(k)=\E[(1-Q)^k]\) for the miss rate of the "flag if anyone flags" rule, and \(M_P\) for its false-alarm analogue. When agents are sound (\(p_v\equiv0\)) the two coincide, \(M=M_Q\).</p>
+      </div>
+    </div>
+
+    <p class="lead1">The single fact behind the whole theory: <mark class="hl">\(M(k)\) is the \(k\)-th moment of the random variable \(U=1-\Delta\)</mark>, which lives in \([0,1]\). Every later result is a statement about moment sequences.</p>
+    <p class="side"><b class="nl">Reading a(k)</b>\(a=1\): doubling the team halves the misses. \(a=2\): it quarters them. \(a\) near 0: doubling barely helps. Since horizon \(\propto 1/M\), doubling multiplies the safe depth by \(2^{a}\).</p>
+    <p>For large \(k\), \((1-\Delta)^k\) is tiny unless \(\Delta\) is close to 0. So the large-team miss rate is decided by the defects that are hardest to see. <strong>The tail of the distribution of \(\Delta\) near zero sets the curve, not its mean.</strong> If some defects have \(\Delta=0\) exactly, \(M(k)\) can never fall below their share \(\pi_0\).</p>
+    <p>The figure below parametrises a population by three numbers. <em>Per-agent accuracy</em> is \(\E[\Delta]\). The <em>blind-spot mass</em> is \(\pi_0\). The <em>tail exponent</em> \(a\) controls how much mass sits near \(\Delta=0\): the share of defects with \(\Delta\le t\) behaves like \(t^{a}\) for small \(t\). At \(a=\infty\) every defect is equally visible; as \(a\to0\) defects become either obvious or invisible. (Technically, \(\Delta\) is a Beta distribution with an optional atom at zero, the same family the paper uses to prove Theorem 4.5.)</p>
+
+    <figure class="fig" id="fig-misscurve" data-fig="missCurve">
+      <figcaption class="fig-head">
+        <span class="fig-num">Figure 3 · Definition 3.2</span>
+        <span class="fig-title">Build a population, read its miss curve</span>
+        <p class="fig-desc">Left: how \(\Delta\) is spread across defects, with the blind-spot share drawn as a red bar at 0. Orange marks the part of each visibility band that a team of size <var>k</var> still misses. Right: the miss curve \(M(k)\) on log–log axes, and below it the coverage exponent \(a(k)\) with the \(a=1\) line.</p>
+      </figcaption>
+      <div class="fig-body"></div>
+      <div class="fig-foot"><div class="try"><b>Try this:</b> slide <var>k</var> upward and watch the orange "still missed" bars shrink everywhere except near \(\Delta=0\). Then add a small blind spot (\(\pi_0=0.02\)): \(a(k)\) rises, peaks and falls back to 0, and \(M(k)\) flattens onto the \(\pi_0\) floor.</div></div>
+    </figure>
+
+    <div class="quiz"><div class="qh">Check yourself</div>
+      <details><summary>\(M(4)=0.10\) and \(M(8)=0.025\). What is \(a(4)\), and what does it buy?</summary><div class="ans">\(a(4)=\log_2(0.10/0.025)=\log_2 4=2\). Going from 4 to 8 agents divides misses by 4, so the safe depth grows about 4×.</div></details>
+      <details><summary>A population has \(\pi_0=0.05\). What can you say about \(M(1000)\)?</summary><div class="ans">\(M(1000)\ge0.05\). The curve decreases to \(\pi_0\) and never goes below it.</div></details>
+      <details><summary>Why can't the average accuracy \(\E[\Delta]\) predict \(M(64)\)?</summary><div class="ans">\(M(64)=\E[(1-\Delta)^{64}]\) depends almost entirely on the defects with \(\Delta\) below about \(1/64\). The mean barely constrains how much mass sits there.</div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="pipelines" data-crumb="Pipelines A1–A3">
+    <h3>Pipelines and three assumptions</h3>
+    <div class="ref"><span>§3.2</span></div>
+
+    <p>A <strong>pipeline</strong> of depth \(n\) is a sequence of stages, each writing one component of the artifact. Conditional on any history, stage \(t\) introduces a defect with probability \(\beta\), whose hidden state is drawn independently from \(\mu\). Stages write disjoint components. Between stages, verifying agents may be queried, and if a defect is reported a repair agent may act.</p>
+    <div class="stage-diagram" aria-label="Anatomy of one stage">
+      <div><span class="k">stage t</span><b>Write component t</b>A new piece of the artifact.</div>
+      <div><span class="k">probability β</span><b>Maybe a defect</b>Its hidden state θ is drawn from μ.</div>
+      <div><span class="k">A2</span><b>At most k judgements</b>Agents look at this component.</div>
+      <div><span class="k">A1</span><b>Flag, then repair</b>Only flagged components are revised.</div>
+      <div><span class="k">A3</span><b>Few false alarms</b>Clean work is flagged with probability ≤ φ̄.</div>
+    </div>
+    <div class="assume">
+      <div><span class="tag">A1</span><div><b>Flag-gated repair</b>A component is revised only after some judgement about it comes back positive. Nobody rewrites what nobody questioned.</div></div>
+      <div><span class="tag">A2</span><div><b>Bounded scrutiny</b>At most \(k\) judgements ever depend on a given component. This is what "reviewing the diff" means. Section 4.4 treats the alternative.</div></div>
+      <div><span class="tag">A3</span><div><b>False-alarm budget</b>Conditional on any history, a defect-free component is flagged with probability at most \(\bar\phi\). Without this, a protocol could flag everything and never accept.</div></div>
+    </div>
+    <p>The pipeline <strong>succeeds</strong> if the final artifact has no defect. The <strong>horizon</strong> \(n^*(\varepsilon)\) is the largest depth at which the success probability is still at least \(1-\varepsilon\).</p>
+    <p class="side"><b class="nl">Risk budget</b>\(\varepsilon=0.05\) means you accept a 5% chance that the final artifact is defective.</p>
+  </section>
+
+  <!-- ============================== PART II ============================== -->
+  <div class="part-head" id="part2">
+    <span class="pn">Part II · §4</span>
+    <h2>What verification can buy</h2>
+    <p>One ceiling bounds every protocol. It converts into a law for how deep a pipeline can go, with sharp consequences for team size, accuracy, re-review and false alarms.</p>
+  </div>
+
+  <section class="sec" id="scrutiny" data-crumb="Scrutiny bound">
+    <h3>No protocol can beat the miss curve</h3>
+    <div class="ref"><span>§4.1</span><span>Theorem 4.1</span><span>Eq. (4)</span></div>
+
+    <p>Protocol designers have enormous freedom: majority vote, unanimity, weighted juries, sequential escalation, multi-round debate, re-asking one agent at a higher temperature. All of it is bounded by one curve.</p>
+
+    <div class="thm">
+      <div class="thm-h">Theorem 4.1 <em>Scrutiny bound</em></div>
+      <div class="thm-b">
+        <p>Let a verification protocol observe at most \(k\) agent judgements about a component (choosing adaptively whom to ask and when to stop, and aggregating them arbitrarily and randomly) and output <span class="chip-flag">FLAG</span> or <span class="chip-pass">PASS</span>. Let \(\delta\) be its flag probability when the defect is present and \(\phi\) when it is absent. Then</p>
+        <div class="eqx">
+          <div class="eq">\[ \class{t-1}{\delta}-\class{t-2}{\phi}\;\le\;\class{t-3}{1-M(k)}. \]<span class="eq-num">(4)</span></div>
+          <dl class="anatomy">
+            <div class="an" data-t="1" tabindex="0"><dt>\(\delta\)</dt><dd>Detection rate: the protocol flags when the defect is there.</dd></div>
+            <div class="an" data-t="2" tabindex="0"><dt>\(\phi\)</dt><dd>False-alarm rate: the protocol flags when it is not.</dd></div>
+            <div class="an" data-t="1" tabindex="0"><dt>\(\delta-\phi\)</dt><dd><b>Advantage</b>: genuine discrimination. A protocol that always flags has \(\delta=\phi=1\) and advantage 0.</dd></div>
+            <div class="an" data-t="3" tabindex="0"><dt>\(1-M(k)\)</dt><dd>The ceiling: the chance that at least one of \(k\) judgements is moved by the defect.</dd></div>
+          </dl>
+        </div>
+        <p>For a heterogeneous pool the same holds with \(M(k)\) replaced by \(\E_\theta\bigl[\min_{|S|\le k}\prod_{i\in S}(1-\Delta_i(\theta))\bigr]\). If agents are sound and the rule is "flag if anyone flags", (4) holds with equality.</p>
+      </div>
+    </div>
+
+    <p>Read it as: a protocol can react to a defect only through judgements the defect actually moved. If none of the \(k\) judgements was moved, the protocol sees the same evidence whether or not the defect exists, so it cannot behave differently. <mark class="hl">More conversation cannot substitute for coverage: debate reshuffles \(k\) judgements, it does not create new ones.</mark></p>
+
+    <details class="why"><summary>Why it holds (intuition, not the proof)</summary>
+      <p>Picture two worlds that are identical except that one contains the defect. Pair up each agent's verdict in the two worlds so they agree whenever possible; they then disagree with probability \(\Delta(\theta)\), independently across judgements. Run the protocol in both worlds side by side. Until the first judgement that differs, it asks the same agents, sees the same answers and makes the same choices. So the chance it ends up acting differently is at most the chance that some judgement differs, \(1-(1-\Delta)^k\). Averaging over \(\theta\) gives \(1-M(k)\).</p>
+    </details>
+
+    <p>The one hypothesis that is not free is conditional independence, and seeing why shows where the leverage is. Agents that are <em>negatively</em> correlated given \(\theta\), in the sense of Littlewood and Miller's forced diversity, can push the chance that all \(k\) agree below \(\E[(1-\Delta)^k]\), and then the bound does not apply. Sampling agents at random from a design distribution never does this. <em>Choosing</em> agents can. Selection (Part IV) is the constructive counterpart of this theorem, and the negative correlation it manufactures is its whole value.</p>
+    <p>The heterogeneous version handles a pool of distinct agents with their own \(\Delta_i(\theta)\). For each defect, the best a protocol could hope for is to have asked the \(k\) agents least likely to miss it together, which is the minimum over subsets.</p>
+
+    <figure class="fig" id="fig-protocols" data-fig="protocols">
+      <figcaption class="fig-head">
+        <span class="fig-num">Figure 4 · Theorem 4.1</span>
+        <span class="fig-title">Every protocol lives under one line</span>
+        <p class="fig-desc">Each point is a verification protocol that uses <var>k</var> agent judgements: its false-alarm rate \(\phi\) across, detection rate \(\delta\) up. The red region above the line \(\delta=\phi+1-M(k)\) is unreachable. Grey dots are 300 random protocols (arbitrary, possibly randomised rules mapping the verdicts to a decision). The blue curve is the best any protocol can do (the Neyman–Pearson frontier). Agents false-alarm with probability <var>p</var>.</p>
+      </figcaption>
+      <div class="fig-body"></div>
+      <div class="fig-foot"><div class="try"><b>Try this:</b> set <var>p</var> = 0. "Any flag" lands exactly on the boundary, as the theorem's equality case says. Raise <var>p</var>: every protocol drops away from the line, and no rule, adaptive or not, crosses it.</div></div>
+    </figure>
+
+    <div class="quiz"><div class="qh">Check yourself</div>
+      <details><summary>Five agents each give a verdict, then argue for two rounds and vote. Nobody re-examines the artifact. Can the debate's detection minus false alarms exceed \(1-M(5)\)?</summary><div class="ans">No. The later rounds are functions of the same five judgements (plus randomness), so the protocol uses at most five judgements and Theorem 4.1 applies. Only new judgements, not more talk, raise the ceiling.</div></details>
+      <details><summary>Which protocol attains the bound exactly?</summary><div class="ans">With sound agents, "flag if anyone flags": it never false-alarms (\(\phi=0\)) and misses only when all \(k\) miss, so \(\delta=1-M(k)\).</div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="shape" data-crumb="Shape of the curve">
+    <h3>The shape every miss curve must have</h3>
+    <div class="ref"><span>§4.1</span><span>Proposition 4.2</span></div>
+
+    <div class="thm">
+      <div class="thm-h">Proposition 4.2 <em>Shape of the miss curve</em></div>
+      <div class="thm-b">
+        <p>\(M\) is completely monotone,</p>
+        <div class="eqx">
+          <div class="eq">\[ \class{t-1}{\sum_{i=0}^{j}(-1)^{i}\binom{j}{i}M(k+i)}\;\ge\;0\quad\text{for all } j,k\ge0, \]</div>
+        </div>
+        <p>and log-convex, \(M(k)^2\le M(k-1)M(k+1)\). It decreases to \(\pi_0\). Consequently the marginal detection gain \(M(k-1)-M(k)\) of the \(k\)-th judgement is non-increasing in \(k\): detection always saturates.</p>
+      </div>
+    </div>
+
+    <dl class="anatomy">
+      <div class="an"><dt>\(j=1\)</dt><dd>\(M(k)-M(k+1)\ge0\). More agents never miss more.</dd></div>
+      <div class="an"><dt>\(j=2\)</dt><dd>\(M(k)-2M(k+1)+M(k+2)\ge0\). The gains shrink: the curve is convex.</dd></div>
+      <div class="an"><dt>any \(j\)</dt><dd>The sum equals \(\E[U^{k}(1-U)^{j}]\): the chance that a given set of \(k\) agents all miss a defect <em>and</em> a given set of \(j\) other agents all catch it. It is a probability, so it cannot be negative.</dd></div>
+      <div class="an"><dt>log-convex</dt><dd>\(M(k+1)/M(k)\) never decreases: each new agent removes a smaller share of the misses that remain.</dd></div>
+    </dl>
+
+    <p>Log-convexity has a simple story. The defects that survive \(k\) agents are disproportionately hard ones, so the next agent faces a harder residue than the last one did. Detection \(1-M(k)\) therefore always shows diminishing returns. That is a mathematical fact about every exchangeable population, so <mark class="hl">a saturating detection curve is evidence of nothing beyond exchangeability.</mark></p>
+    <p>The proposition doubles as a <strong>falsification test</strong>. Measured miss curves must satisfy every one of these inequalities. A significantly negative alternating sum refutes the exchangeable-population model itself, not the estimate.</p>
+
+    <details class="why"><summary>Fine print: when does the test have teeth?</summary>
+      <p>If you estimate the whole curve from a single panel of \(K\) agents with the binomial formula of §8, every alternating sum of order up to \(K\) is automatically an observed frequency, so it cannot come out negative. The alternating sums bite when points on the curve come from separate experiments, from hand-picked rosters, or from teams whose members influence each other.</p>
+      <p>For a finite list of values these inequalities are necessary but not sufficient. Log-convexity and the exact moment test can fail even on single-panel data, for example when agents are anti-correlated (on every defect, exactly one of two agents flags). The figure's third check runs the exact test: it searches for a population that reproduces your values. Figure 15 runs a version of this test on your own counts that allows for sampling noise.</p>
+    </details>
+
+    <figure class="fig" id="fig-shape" data-fig="shape">
+      <figcaption class="fig-head">
+        <span class="fig-num">Figure 5 · Proposition 4.2</span>
+        <span class="fig-title">Can this be a miss curve?</span>
+        <p class="fig-desc">Drag the points \(M(1),\dots,M(6)\) (\(M(0)=1\) is fixed). The table lists every alternating sum; a red cell is a negative "probability". The checks below test complete monotonicity, log-convexity, and whether any population at all produces exactly these values.</p>
+      </figcaption>
+      <div class="fig-body"></div>
+      <div class="fig-foot"><div class="try"><b>Try this:</b> load the straight line. It decreases, yet it is impossible: a linear miss curve would mean later agents catch as much as earlier ones. Then make the curve drop late and steeply and see which entries go red.</div></div>
+    </figure>
+
+    <div class="quiz"><div class="qh">Check yourself</div>
+      <details><summary>Someone reports team miss rates 0.40, 0.30 and 0.10 for teams of 1, 2 and 3 random agents. Plausible?</summary><div class="ans">No. Take \(j=2\), \(k=1\): \(M(1)-2M(2)+M(3)\) \(=0.40-0.60+0.10\) \(=-0.10\), a negative "probability". The second agent catches 0.10 of new defects and the third would catch 0.20, but gains can never grow.</div></details>
+      <details><summary>Detection rises from 60% to 80% to 87% as you add agents. Does that saturation show bigger teams are wasteful?</summary><div class="ans">No. Every exchangeable population saturates in detection. Whether bigger teams pay depends on the horizon, which follows \(1/M(k)\) and can accelerate (next sections).</div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="horizon" data-crumb="Horizon law">
+    <h3>The horizon law</h3>
+    <div class="ref"><span>§4.2</span><span>Theorem 4.3</span><span>Eqs. (5)–(6)</span></div>
+
+    <div class="thm">
+      <div class="thm-h">Theorem 4.3 <em>Horizon law</em></div>
+      <div class="thm-b">
+        <p>Under (A1)–(A3),</p>
+        <div class="eqx">
+          <div class="eq">\[ \Pr[\text{final artifact defective}]\;\ge\;1-\bigl(1-\class{t-1}{\beta}\,\class{t-2}{(M(k)-\bar\phi)}\bigr)^{\class{t-3}{n}}, \]<span class="eq-num">(5)</span></div>
+          <dl class="anatomy">
+            <div class="an" data-t="1" tabindex="0"><dt>\(\beta\)</dt><dd>Chance that a stage introduces a defect.</dd></div>
+            <div class="an" data-t="2" tabindex="0"><dt>\(M(k)-\bar\phi\)</dt><dd>The least possible chance that the defect goes unreported (Theorem 4.1 plus the false-alarm budget).</dd></div>
+            <div class="an" data-t="1" tabindex="0"><dt>\(\beta(M(k)-\bar\phi)\)</dt><dd>The per-stage <b>leak</b>: a defect gets in and is never reported.</dd></div>
+            <div class="an" data-t="3" tabindex="0"><dt>\((1-\text{leak})^{n}\)</dt><dd>No stage out of \(n\) leaks. A leak survives to the end (A1 and disjoint components), so this is the best possible success rate.</dd></div>
+          </dl>
+        </div>
+        <p>so keeping the risk at \(\varepsilon\) requires</p>
+        <div class="eqx">
+          <div class="eq">\[ n\;\le\;n^{*}(\varepsilon)=\frac{\class{t-1}{\ln\frac{1}{1-\varepsilon}}}{\class{t-2}{\ln\frac{1}{1-\beta(M(k)-\bar\phi)}}} \;=\;\class{t-3}{\Theta\!\Bigl(\frac{\varepsilon}{\beta\,M(k)}\Bigr)}. \]<span class="eq-num">(6)</span></div>
+          <dl class="anatomy">
+            <div class="an" data-t="1" tabindex="0"><dt>\(\ln\frac{1}{1-\varepsilon}\)</dt><dd>About \(\varepsilon\) when \(\varepsilon\) is small (\(0.0513\) for \(\varepsilon=0.05\)).</dd></div>
+            <div class="an" data-t="2" tabindex="0"><dt>\(\ln\frac{1}{1-p}\)</dt><dd>About the leak \(p\) when it is small.</dd></div>
+            <div class="an" data-t="3" tabindex="0"><dt>\(\varepsilon/(\beta M(k))\)</dt><dd>The horizon to first order: risk budget divided by per-stage leak.</dd></div>
+          </dl>
+        </div>
+        <p>Conversely, sound agents with the "flag if anyone flags" rule and reliable repair achieve \(\Pr[\text{defective}]=1-(1-\beta M(k))^{n}\), so (6) is tight up to the false-alarm slack \(\bar\phi\).</p>
+      </div>
+    </div>
+
+    <p>Every stage is a small lottery: with probability \(\beta(M(k)-\bar\phi)\) a defect gets in and is never reported. A leaked defect is never revised (A1), and no later stage overwrites it (disjoint components), so it survives to the end. Surviving \(n\) stages without a leak has probability \((1-\text{leak})^n\). Set that equal to \(1-\varepsilon\), solve for \(n\), and you get the horizon.</p>
+    <p>The two-sided statement is what makes (6) a law rather than a bound: <mark class="hl">reachable depth is \(\varepsilon/(\beta M(k))\) up to constants, for every protocol.</mark> Halve the miss rate and you double the safe depth.</p>
+    <p class="side"><b class="nl">Worked example</b>\(\beta=0.1\), \(\varepsilon=0.05\), \(M(k)=0.01\): leak \(=0.001\) per stage, so \(n^*\approx0.0513/0.0010005\approx51\) stages. Cut the miss rate to \(0.001\) and the horizon is about 513.</p>
+    <p>Each assumption earns its place. Without A1, an unreported defect could be rewritten away by chance. Without A2, more than \(k\) judgements could touch a component (Section 4.4). Without A3, a protocol could flag everything and never accept, which trivially catches every defect.</p>
+
+    <figure class="fig" id="fig-pipeline" data-fig="pipeline">
+      <figcaption class="fig-head">
+        <span class="fig-num">Figure 6 · Theorem 4.3</span>
+        <span class="fig-title">Run pipelines and watch the horizon law appear</span>
+        <p class="fig-desc">Top: one pipeline, stage by stage. A red stage got a defect; small dots are the <var>k</var> reviewers (green flagged it). A flagged defect is repaired; an unflagged one leaks to the end. Bottom: 3,000 simulated pipelines. Dots show the share still clean at each depth; the line is the theorem's \((1-\beta M(k))^n\). The dashed vertical line marks the horizon \(n^*\) where success falls to \(1-\varepsilon\).</p>
+      </figcaption>
+      <div class="fig-body"></div>
+      <div class="fig-foot"><div class="try"><b>Try this:</b> double <var>k</var> and compare the horizon readout with the population's \(a(k)\): the horizon multiplies by roughly \(2^{a}\). Then raise \(\bar\phi\) toward \(M(k)\) and watch the guaranteed bound become vacuous.</div></div>
+    </figure>
+
+    <div class="quiz"><div class="qh">Check yourself</div>
+      <details><summary>\(\beta=0.05\), \(\varepsilon=0.10\), \(M(k)=0.02\). Roughly how deep can the pipeline go?</summary><div class="ans">\(\varepsilon/(\beta M)=0.10/0.001=100\) stages. The exact formula gives \(\ln(1/0.9)/\ln(1/0.999)\approx105\).</div></details>
+      <details><summary>Why does a defect that slipped past review at stage 3 still matter at stage 50?</summary><div class="ans">Under A1 nobody revises a component that no judgement flagged, and later stages write other components, so nothing removes it.</div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="regimes" data-crumb="Regimes and a = 1">
+    <h3>Scaling regimes and the transition at \(a=1\)</h3>
+    <div class="ref"><span>§4.2</span><span>Corollary 4.4</span></div>
+
+    <div class="thm">
+      <div class="thm-h">Corollary 4.4 <em>Scaling regimes</em></div>
+      <div class="thm-b">
+        <p>Let \(\varepsilon,\beta\) be fixed.</p>
+        <ol class="parts">
+          <li><b>(i)</b> If \(\pi_0>0\) then \(n^{*}(\varepsilon)\le\ln\frac{1}{1-\varepsilon}\big/\ln\frac{1}{1-\beta\pi_0}\) for every \(k\): the horizon is bounded no matter how many agents verify, how often, or how cleverly.</li>
+          <li><b>(ii)</b> If \(\Pr[\Delta\le t]=(c+o(1))\,t^{a}\) as \(t\downarrow0\) with \(a>0\), then \(M(k)\sim c\,\Gamma(a{+}1)\,k^{-a}\) and \(n^{*}=\Theta(k^{a})\); equivalently \(a(k)\to a\).</li>
+          <li><b>(iii)</b> The number of agent judgements needed for a depth-\(n\) pipeline is \(J(n)=nk=\Theta\bigl(n^{1+1/a}\bigr)\): super-linear in the horizon.</li>
+          <li><b>(iv)</b> \(n^{*}(k)\) is convex increasing in \(k\) iff \(a>1\). Marginal returns to team size <em>increase</em> above the threshold and diminish below it, even though detection \(1-M(k)\) is concave in \(k\) throughout.</li>
+        </ol>
+      </div>
+    </div>
+
+    <h4>(i) A blind spot is a hard ceiling</h4>
+    <p>\(M(k)\ge\pi_0\) for every \(k\), so every stage leaks with probability at least \(\beta\pi_0\), and the horizon is at most about \(\varepsilon/(\beta\pi_0)\). With \(\pi_0=1\%\), \(\beta=0.1\) and \(\varepsilon=0.05\), no team of any size, protocol or budget gets past roughly 51 stages.</p>
+
+    <h4>(ii) Power-law tails give power-law horizons</h4>
+    <div class="eqx">
+      <div class="eq">\[ \class{t-1}{\Pr[\Delta\le t]\approx c\,t^{a}}\quad\Longrightarrow\quad \class{t-2}{M(k)\sim c\,\Gamma(a{+}1)\,k^{-a}},\qquad \class{t-3}{a(k)\to a} \]</div>
+      <dl class="anatomy">
+        <div class="an" data-t="1" tabindex="0"><dt>\(\Pr[\Delta\le t]\approx c\,t^{a}\)</dt><dd>The share of defects that are at most \(t\)-visible, for small \(t\). A larger \(a\) means fewer near-invisible defects.</dd></div>
+        <div class="an" data-t="2" tabindex="0"><dt>\(c\,\Gamma(a{+}1)\,k^{-a}\)</dt><dd>\(k\) agents miss roughly the defects with \(\Delta\lesssim1/k\), and there are about \(c\,k^{-a}\) of them. \(\Gamma(a+1)\) is the exact constant (it comes from \(\int_0^\infty e^{-kt}\,d(ct^{a})\)).</dd></div>
+        <div class="an" data-t="3" tabindex="0"><dt>\(a(k)\to a\)</dt><dd>Doubling \(k\) divides \(k^{-a}\) by \(2^{a}\), so the doubling exponent settles at the tail exponent.</dd></div>
+      </dl>
+    </div>
+    <p>This is why the paper calls \(a\) the coverage exponent: it is simultaneously the shape of the hardest-defect tail, the slope of the miss curve on log–log axes, and the growth rate of the horizon, \(n^*\propto k^{a}\).</p>
+
+    <h4>(iii) Verification cost grows faster than depth</h4>
+    <p>To reach depth \(n\) you need \(M(k)\approx\varepsilon/(\beta n)\), so \(k\propto n^{1/a}\) agents per stage, over \(n\) stages: \(J(n)=nk\propto n^{1+1/a}\). With \(a=1\), cost grows like \(n^2\); with \(a=2\), like \(n^{1.5}\); with \(a=0.5\), like \(n^3\).</p>
+
+    <h4>(iv) The reversal</h4>
+    <p>\(n^*\propto k^{a}\) has second derivative proportional to \(a(a-1)k^{a-2}\), which is positive exactly when \(a>1\). Above the threshold each added agent buys <em>more</em> horizon than the one before, even while detection levels off. Below it, horizon gains shrink too.</p>
+    <p><mark class="hl">This is the practically important reversal.</mark> Every measurement of detection shows diminishing returns, which is often read as evidence that large verifying teams are wasteful. For horizon the same data can mean the opposite.</p>
+
+    <div class="callout"><div class="ct">Caveat: false alarms</div>
+      <p>Theorem 4.3 is driven by \(\beta(M(k)-\bar\phi)\), which is vacuous once \(\bar\phi\gtrsim M(k)\): a protocol allowed to flag clean components about as often as it misses defective ones satisfies it for free. \(M(k)\) falls with \(k\) while \(\bar\phi\) does not, so this is exactly the large-\(k\) regime where \(k^{a}\) scaling lives. Growing the team is a prescription <em>conditional</em> on keeping false alarms below the miss rate being bought. Section 4.5 turns that into a bound on team size, and the paper's experiments show it can fail outright: with a scope-limited repairer, the best team size is \(k^\dagger=1\).</p>
+    </div>
+
+    <figure class="fig" id="fig-regimes" data-fig="regimes">
+      <figcaption class="fig-head">
+        <span class="fig-num">Figure 7 · Corollary 4.4</span>
+        <span class="fig-title">Detection saturates while horizon can accelerate</span>
+        <p class="fig-desc">Your population in blue; grey reference populations with the same accuracy and \(a=0.5\), \(1\), \(2\). Top: detection \(1-M(k)\) and horizon \(n^*(k)\) on ordinary axes. Bottom: the horizon on log–log axes (slope \(a\), red ceiling from \(\pi_0\)), and the total judgements \(J(n)\) needed to reach depth \(n\).</p>
+      </figcaption>
+      <div class="fig-body"></div>
+      <div class="fig-foot"><div class="try"><b>Try this:</b> set \(a=2\): the detection panel looks like it is giving up, while the horizon panel curves upward. Set \(a=0.5\): both bend down. Add any blind spot and the horizon hits the red ceiling.</div></div>
+    </figure>
+
+    <div class="quiz"><div class="qh">Check yourself</div>
+      <details><summary>Population A has \(a=2\), population B has \(a=0.5\). What does doubling the team do to each horizon?</summary><div class="ans">A: multiplies it by \(2^2=4\). B: by \(2^{0.5}\approx1.41\).</div></details>
+      <details><summary>With \(a=1\), how does the total verification cost grow with depth?</summary><div class="ans">\(J(n)\propto n^{1+1/1}=n^2\): doubling the depth quadruples the number of judgements.</div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="separation" data-crumb="Accuracy misleads">
+    <h3>Accuracy is the wrong statistic</h3>
+    <div class="ref"><span>§4.3</span><span>Theorem 4.5</span></div>
+
+    <div class="thm">
+      <div class="thm-h">Theorem 4.5 <em>Accuracy–coverage separation</em></div>
+      <div class="thm-b"><p>Fix \(c\in(0,1)\) and let \(\cP_{\mathrm{hom}}\) have \(\Delta\equiv c\), \(\cP_{\mathrm{het}}\) have \(\Delta\sim\mathrm{Bernoulli}(c)\). Both give every agent detection probability exactly \(c\) and are indistinguishable from any number of <em>single</em>-agent evaluations, yet \(M_{\mathrm{hom}}(k)=(1-c)^{k}\) while \(M_{\mathrm{het}}(k)=1-c\), so \(n^{*}_{\mathrm{hom}}/n^{*}_{\mathrm{het}}=(1-c)^{-(k-1)}\to\infty\). More generally, for every \(c\) and every \(a\in(0,\infty]\) some population has per-agent accuracy \(c\) and coverage exponent \(a\).</p></div>
+    </div>
+
+    <dl class="anatomy">
+      <div class="an"><dt>\(\Delta\equiv c\)</dt><dd>Homogeneous: every defect is equally visible, and each agent catches each one with probability \(c\), independently.</dd></div>
+      <div class="an"><dt>\(\Delta\sim\mathrm{Bernoulli}(c)\)</dt><dd>All-or-nothing: a share \(c\) of defects are obvious to every agent; the rest are invisible to all.</dd></div>
+      <div class="an"><dt>\((1-c)^{k}\)</dt><dd>Homogeneous misses fall geometrically with team size.</dd></div>
+      <div class="an"><dt>\(1-c\)</dt><dd>All-or-nothing misses never fall: extra agents see exactly what the first one saw.</dd></div>
+      <div class="an"><dt>\((1-c)^{-(k-1)}\)</dt><dd>The horizon ratio. At \(c=0.5\) and \(k=11\) it is already 1,024.</dd></div>
+      <div class="an"><dt>\(\mathrm{Beta}\bigl(a,\tfrac{a(1-c)}{c}\bigr)\)</dt><dd>The general construction: mean \(c\), tail \(\Pr[\Delta\le t]\asymp t^{a}\). Any coverage exponent at any accuracy.</dd></div>
+    </dl>
+
+    <p>A single-agent evaluation, however large, sees each agent catch a share \(c\) of defects in both populations and cannot tell them apart. Their miss curves split at \(k=2\). <mark class="hl">Mean verifier accuracy, the standard report for a judge pool, is a free parameter with respect to everything in this paper.</mark> The miss curve is not, and it costs no more to measure: the same calibration set gives it, if you record how many agents flagged each defect instead of averaging over agents.</p>
+
+    <figure class="fig" id="fig-lineup" data-fig="lineup">
+      <figcaption class="fig-head">
+        <span class="fig-num">Figure 8 · Theorem 4.5</span>
+        <span class="fig-title">Four judge pools with the same leaderboard score</span>
+        <p class="fig-desc">Four populations, all with per-agent accuracy <var>c</var>. Small panels show how \(\Delta\) is spread across defects; every one has the same mean (dashed line). The main chart shows their miss curves; the table shows what a leaderboard would report and what the team would actually achieve.</p>
+      </figcaption>
+      <div class="fig-body"></div>
+      <div class="fig-foot"><div class="try"><b>Try this:</b> drag <var>c</var>. The leaderboard column stays identical across the four rows while the horizon column spans orders of magnitude.</div></div>
+    </figure>
+
+    <div class="quiz"><div class="qh">Check yourself</div>
+      <details><summary>Two judge pools both score 70% on a benchmark of single-judge evaluations. What else do you need to compare the horizons their teams support?</summary><div class="ans">Their miss curves: how often \(k\) of them all miss the same defect. One calibration set with per-defect flag counts gives it.</div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="rereview" data-crumb="Re-reviewing everything">
+    <h3>Re-reviewing everything</h3>
+    <div class="ref"><span>§4.4</span><span>Theorem 4.6</span><span>Eq. (7)</span></div>
+
+    <p>Assumption A2 formalises reviewing only the change. Suppose instead a fresh team of \(k\) re-inspects the <em>entire</em> artifact at every stage. A defect injected \(s\) stages before the end has then faced \(ks\) judgements. Can scrutiny spread over time rescue what scrutiny over agents cannot?</p>
+
+    <div class="thm">
+      <div class="thm-h">Theorem 4.6 <em>Re-review does not change the population</em></div>
+      <div class="thm-b">
+        <p>In the full-re-review regime with sound agents and reliable flag-gated repair,</p>
+        <div class="eqx">
+          <div class="eq">\[ \Pr[\text{artifact clean after }n\text{ stages}] =\class{t-1}{\prod_{s=1}^{n}}\bigl(1-\class{t-2}{\beta\,M(ks)}\bigr), \]<span class="eq-num">(7)</span></div>
+          <dl class="anatomy">
+            <div class="an" data-t="2" tabindex="0"><dt>\(s\)</dt><dd>How many stages ago a component was written.</dd></div>
+            <div class="an" data-t="2" tabindex="0"><dt>\(ks\)</dt><dd>Judgements that component has faced since: \(k\) fresh agents per stage, for \(s\) stages.</dd></div>
+            <div class="an" data-t="2" tabindex="0"><dt>\(\beta M(ks)\)</dt><dd>It received a defect and every one of those \(ks\) judgements missed it.</dd></div>
+            <div class="an" data-t="1" tabindex="0"><dt>\(\prod_{s=1}^{n}\)</dt><dd>Stages inject independently and write disjoint components, so their chances multiply.</dd></div>
+          </dl>
+        </div>
+        <p>exactly. Hence the limit is positive if and only if \(\sum_{s\ge1}M(ks)\lt\infty\), which by monotonicity of \(M\) holds for one \(k\ge1\) iff it holds for all: whether unbounded re-review can sustain an unbounded horizon is a property of the population and <em>cannot be changed by the team size</em>. Under the regular variation of Corollary 4.4(ii) it holds iff \(a>1\).</p>
+      </div>
+    </div>
+
+    <p>An infinite product \(\prod(1-x_s)\) stays positive exactly when \(\sum x_s\) is finite. With \(M(k)\approx Ck^{-a}\), the sum behaves like \(\sum_s s^{-a}\), the p-series from calculus: it converges for \(a>1\) (for \(a=2\) it equals \(\pi^2/6\)) and diverges for \(a\le1\) (the harmonic series). A bigger \(k\) multiplies every term by roughly \(k^{-a}\), which cannot turn a divergent series into a convergent one. <mark class="hl">No team size moves a population across \(a=1\).</mark></p>
+    <p class="side"><b class="nl">Sandwich</b>Since \(M\) is non-increasing, \(\frac1k\sum_s M(s)\le\sum_s M(ks)\le\sum_s M(s)\). So the series converge or diverge together for every \(k\).</p>
+    <p><strong>Fresh versus fixed.</strong> The theorem assumes a fresh team at every stage. A fixed roster is the opposite extreme: an agent that missed once misses again, so \(s\) rounds contribute \(k\) judgements rather than \(ks\), \(M(ks)\) becomes the constant \(M(k)\), and the product goes to zero. Re-review by a fixed roster never helps. Refreshing a fraction \(\lambda\) of the team each stage interpolates, replacing \(ks\) by \(\Theta(\lambda ks)\) and leaving the criterion unchanged.</p>
+
+    <h4>Which schedule is cheaper?</h4>
+    <p>With \(M(k)\asymp Ck^{-a}\), reaching depth \(n\) at risk \(\varepsilon\) by reviewing only the change needs \(k=\Theta\bigl((n\beta/\varepsilon C)^{1/a}\bigr)\) agents per stage and \(\Theta(n^{1+1/a})\) judgements in total. Re-reviewing everything needs a team of size \(\Theta\bigl((\beta\zeta(a)C/\varepsilon)^{1/a}\bigr)\), independent of \(n\), but \(\Theta(n^{2})\) judgements, and it is impossible for \(a\le1\) at any size. Reviewing the change therefore wins by a factor \(\Theta(n^{1-1/a})\) whenever \(a>1\).</p>
+    <dl class="anatomy">
+      <div class="an"><dt>\(\zeta(a)=\sum_{s\ge1}s^{-a}\)</dt><dd>The Riemann zeta function. Re-review's total leak is \(\sum_s\beta C(ks)^{-a}=\beta C\zeta(a)k^{-a}\), finite only for \(a>1\).</dd></div>
+      <div class="an"><dt>\(\Theta(n^{2})\)</dt><dd>At stage \(t\) the team re-inspects all \(t\) components, so the total is about \(k\,n^2/2\).</dd></div>
+      <div class="an"><dt>\(\Theta(n^{1-1/a})\)</dt><dd>The ratio \(n^{2}/n^{1+1/a}\): how much cheaper reviewing the change is.</dd></div>
+    </dl>
+    <p>So the crossover \(a=1\) answers two design questions at once: whether growing the team has increasing returns, and whether spending scrutiny over time instead of over agents can rescue an unbounded horizon. Below the threshold neither schedule helps, and every remedy is outside the population: reduce \(\beta\), or acquire evidence the population does not have.</p>
+
+    <figure class="fig" id="fig-rereview" data-fig="rereview">
+      <figcaption class="fig-head">
+        <span class="fig-num">Figure 9 · Theorem 4.6</span>
+        <span class="fig-title">Does re-reviewing everything keep a pipeline clean forever?</span>
+        <p class="fig-desc">Left: the exact probability, Eq. (7), that the artifact is still clean after <var>n</var> stages, for three team sizes. Middle: the partial sums \(\sum_{s\le n}M(ks)\) that decide it. Right: total judgements needed to reach depth <var>n</var> at risk \(\varepsilon\) under each schedule.</p>
+      </figcaption>
+      <div class="fig-body"></div>
+      <div class="fig-foot"><div class="try"><b>Try this:</b> with \(a=0.8\), all three team sizes eventually decay to zero (bigger teams just later). Move \(a\) to 1.5 and they level off. Switch to a fixed roster and nothing levels off, whatever \(a\) is.</div></div>
+    </figure>
+
+    <div class="quiz"><div class="qh">Check yourself</div>
+      <details><summary>A population has \(a=0.8\). Will a big enough fresh team re-inspecting everything every stage give a positive chance of staying clean forever?</summary><div class="ans">No. \(\sum_s M(ks)\) behaves like \(\sum_s s^{-0.8}\), which diverges for every \(k\).</div></details>
+      <details><summary>Why does re-review by the same fixed roster never help?</summary><div class="ans">If an agent's miss is a property of the agent and the defect, asking it again gives the same answer. The defect still faces only \(k\) distinct judgements.</div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="teamsize" data-crumb="When to stop adding">
+    <h3>When to stop adding agents</h3>
+    <div class="ref"><span>§4.5</span><span>Eqs. (8)–(10)</span></div>
+
+    <p>Real agents raise false alarms, and repairs damage what they touch. Let a repair fix a reported defect with probability \(\rho\), and damage a wrongly reported (clean) component with probability \(\beta_r\). The per-stage risk becomes</p>
+    <div class="eqx">
+      <div class="eq">\[ \kappa(k)=\class{t-1}{\beta(1-\rho)}+\class{t-2}{\beta\rho\,M_Q(k)}+\class{t-3}{(1-\beta)\beta_r\bigl(1-M_P(k)\bigr)}. \]<span class="eq-num">(8)</span></div>
+      <dl class="anatomy">
+        <div class="an" data-t="1" tabindex="0"><dt>\(\beta(1-\rho)\)</dt><dd>A defect arrives and the repair would fail even if reported. A floor that no amount of verification removes.</dd></div>
+        <div class="an" data-t="2" tabindex="0"><dt>\(\beta\rho\,M_Q(k)\)</dt><dd>A defect arrives, the repair would have worked, but all \(k\) agents miss it.</dd></div>
+        <div class="an" data-t="3" tabindex="0"><dt>\((1-\beta)\beta_r(1-M_P(k))\)</dt><dd>The component is clean, at least one agent raises a false alarm, and the repair breaks it.</dd></div>
+        <div class="an" data-t="3" tabindex="0"><dt>\(M_P(k)\)</dt><dd>\(\E[(1-P)^k]\): the chance none of \(k\) agents false-alarms on a clean component.</dd></div>
+      </dl>
+    </div>
+    <p>The risk is at least \(\beta(1-\rho)\) for every \(k\): <mark class="hl">unreliable repair floors the risk however good the verification.</mark> The miss term falls with \(k\); the damage term rises with \(k\), because more agents give more chances for someone to cry wolf. With \(\nabla M(k)=M(k-1)-M(k)\ge0\), adding the \(k\)-th judgement lowers the risk exactly when</p>
+    <div class="eqx">
+      <div class="eq">\[ \class{t-1}{\frac{\nabla M_Q(k)}{\nabla M_P(k)}}\;>\;\class{t-2}{\tau:=\frac{(1-\beta)\beta_r}{\beta\rho}}. \]<span class="eq-num">(9)</span></div>
+      <dl class="anatomy">
+        <div class="an" data-t="1" tabindex="0"><dt>\(\nabla M_Q(k)\)</dt><dd>Extra defects caught by the \(k\)-th agent.</dd></div>
+        <div class="an" data-t="1" tabindex="0"><dt>\(\nabla M_P(k)\)</dt><dd>Extra clean components newly flagged by the \(k\)-th agent.</dd></div>
+        <div class="an" data-t="2" tabindex="0"><dt>\(\tau\)</dt><dd>The exchange rate: how many extra catches each extra false alarm must buy to break even. Large when defects are rare (small \(\beta\)) or repairs are destructive (large \(\beta_r\)).</dd></div>
+      </dl>
+    </div>
+    <p>So \(k^{\dagger}\), the last \(k\) at which the ratio exceeds \(\tau\), is where a team should stop. It is <em>not</em> enough that \(\nabla M_Q(k)\to0\): \(M_P\) is a moment sequence too, so its increments vanish as well. Whether a finite optimum exists turns on which vanishes faster, that is, on whether false alarms are less correlated across agents than misses.</p>
+    <p>The natural sufficient condition is that false alarms are nearly independent. Then \(1-M_P(k)\approx k\,\E[P]\) and \(\nabla M_P(k)\approx\E[P]\) over the operating range \(k\ll1/\E[P]\), while \(\nabla M_Q\) is non-increasing by complete monotonicity. The ratio crosses \(\tau\) once, so \(k^\dagger\) exists and minimises \(\kappa\). With \(M_Q(k)\asymp Ck^{-a}\), \(\nabla M_Q\) falls like \(aCk^{-(a+1)}\), and</p>
+    <div class="eqx">
+      <div class="eq">\[ k^{\dagger}\approx\Bigl(\frac{\class{t-1}{aC}}{\class{t-2}{\tau\,\E[P]}}\Bigr)^{\class{t-3}{1/(a+1)}}. \]<span class="eq-num">(10)</span></div>
+      <dl class="anatomy">
+        <div class="an" data-t="1" tabindex="0"><dt>\(aC\,k^{-(a+1)}\)</dt><dd>The \(k\)-th agent's marginal catch: the derivative of \(Ck^{-a}\).</dd></div>
+        <div class="an" data-t="2" tabindex="0"><dt>\(\tau\,\E[P]\)</dt><dd>What its marginal false alarms cost, in units of catches.</dd></div>
+        <div class="an" data-t="3" tabindex="0"><dt>\(1/(a+1)\)</dt><dd>Solving \(aCk^{-(a+1)}=\tau\E[P]\) for \(k\).</dd></div>
+      </dl>
+    </div>
+    <p>Two degenerate cases bracket this. If \(M_P=M_Q\) (agents with no discriminative power), the ratio is identically 1 and \(k^\dagger\) is 0 or \(\infty\) as \(\tau\) is above or below 1. If \(M_Q\) decays more slowly than \(M_P\), the ratio diverges, every large team pays for itself, and \(k^\dagger=\infty\). Beyond the operating range the linearisation fails and false alarms saturate, so (10) locates an optimum for the team sizes one would field, not a global one.</p>
+    <p>How many agents are worth putting on verification is thus as much a property of the repairer, and of how independent false alarms are, as of the verifiers.</p>
+
+    <figure class="fig" id="fig-teamsize" data-fig="teamSize">
+      <figcaption class="fig-head">
+        <span class="fig-num">Figure 10 · Eqs. (8)–(10)</span>
+        <span class="fig-title">Per-stage risk with real repairers</span>
+        <p class="fig-desc">Left: \(\kappa(k)\) split into its three terms, with the exact best team size and the approximation (10). Right: the ratio \(\nabla M_Q/\nabla M_P\) against the break-even line \(\tau\); while the ratio sits above the line, the next agent helps.</p>
+      </figcaption>
+      <div class="fig-body"></div>
+      <div class="fig-foot"><div class="try"><b>Try this:</b> pick the scope-limited repairer: the risk rises from the first extra agent. Then make false alarms correlated across agents and watch \(k^\dagger\) move.</div></div>
+    </figure>
+
+    <div class="quiz"><div class="qh">Check yourself</div>
+      <details><summary>\(\beta=0.1\), \(\rho=0.9\), \(\beta_r=0.7\). What is \(\tau\), and what does it demand of the next agent?</summary><div class="ans">\(\tau=(0.9\times0.7)/(0.1\times0.9)=7\). The next agent must catch at least seven extra defects for every extra false alarm it raises.</div></details>
+      <details><summary>Can better verifiers push the risk below \(\beta(1-\rho)\)?</summary><div class="ans">No. That term is the defects the repairer would fail to fix even when told about them.</div></details>
+    </div>
+  </section>
+
+  <!-- ============================== PART III ============================== -->
+  <div class="part-head" id="part3">
+    <span class="pn">Part III · §5</span>
+    <h2>Measuring the coverage exponent</h2>
+    <p>One calibration set estimates the miss curve. How precise is it, and what does it say about teams larger than the one you measured?</p>
+  </div>
+
+  <section class="sec" id="calibration" data-crumb="Calibration and error bars">
+    <h3>Calibrating a population</h3>
+    <div class="ref"><span>§5</span><span>§8</span><span>Eq. (11)</span></div>
+
+    <p>Calibration is easy in principle. Show \(N\) defects with known ground truth to \(k\) agents and record how many flag each. That estimates \(M(1),\dots,M(k)\) and certifies the horizon for teams up to size \(k\). Two things then need quantifying: how precisely \(N\) defects pin down the exponent, and what the data say about <em>larger</em> teams.</p>
+
+    <h4>The estimator</h4>
+    <p>Let \(f_i\) be the number of the \(k\) agents that flagged defect \(i\). The paper's estimator (stated in §8) is</p>
+    <div class="eqx">
+      <div class="eq">\[ \widehat M(j)=\frac1N\sum_{i=1}^{N}\class{t-1}{\binom{k-f_i}{j}\Big/\binom{k}{j}}. \]</div>
+      <dl class="anatomy">
+        <div class="an" data-t="1" tabindex="0"><dt>\(\binom{k-f_i}{j}\big/\binom{k}{j}\)</dt><dd>For defect \(i\): the chance that \(j\) agents picked at random from the \(k\) all missed it (all \(j\) come from the \(k-f_i\) who did not flag).</dd></div>
+      </dl>
+    </div>
+    <p>Averaging over defects gives the miss curve of a \(j\)-agent team exactly, with no model assumed. It is unbiased for \(M(j)\) for every \(j\le k\).</p>
+
+    <h4>Error bars on the exponent</h4>
+    <p>\(\widehat M(j)\) is a sample mean of \(U^{j}\), so the delta method applied to \(\hat a(j)=\log_2\widehat M(j)/\widehat M(2j)\) gives</p>
+    <div class="eqx">
+      <div class="eq">\[ \operatorname{se}(\hat a(j))=\class{t-1}{\frac{1}{\sqrt N\,\ln 2}} \Bigl[\class{t-2}{\tfrac{V_j}{M(j)^2}}+\class{t-3}{\tfrac{V_{2j}}{M(2j)^2}} -\class{t-4}{\tfrac{2C_j}{M(j)M(2j)}}\Bigr]^{1/2}, \]<span class="eq-num">(11)</span></div>
+      <p>with \(V_j=M(2j)-M(j)^2\), \(V_{2j}=M(4j)-M(2j)^2\), \(C_j=M(3j)-M(j)M(2j)\).</p>
+      <dl class="anatomy">
+        <div class="an" data-t="1" tabindex="0"><dt>\(1/(\sqrt N\ln2)\)</dt><dd>Averaging over \(N\) defects, converted to \(\log_2\) units.</dd></div>
+        <div class="an" data-t="2" tabindex="0"><dt>\(V_j/M(j)^2\)</dt><dd>Squared relative noise of one defect's contribution to \(\widehat M(j)\). \(V_j=\operatorname{Var}(U^j)\) because \(\E[U^{2j}]=M(2j)\).</dd></div>
+        <div class="an" data-t="3" tabindex="0"><dt>\(V_{2j}/M(2j)^2\)</dt><dd>The same for \(\widehat M(2j)\). It dominates, because \(M(2j)\) is the smaller number.</dd></div>
+        <div class="an" data-t="4" tabindex="0"><dt>\(2C_j/(M(j)M(2j))\)</dt><dd>\(U^{j}\) and \(U^{2j}\) move together across defects, which partly cancels in their ratio. \(C_j=\operatorname{Cov}(U^j,U^{2j})\).</dd></div>
+      </dl>
+    </div>
+    <p>Every one of these moments comes from the same calibration set. The bracket blows up as \(M(2j)\) approaches the resolution of the sample, so <mark class="hl">the binding requirement is \(N\,M(2j)\gg1\): the set must contain many defects that a \(2j\)-agent team would still miss.</mark> A rule of thumb from §8: resolving whether \(\hat a(k)\) is above or below 1 to \(\pm0.1\) needs on the order of \(10^{2}/M(2k)\) labelled defects. Cheap while \(M(2k)\) is a few percent, prohibitive once the team is good.</p>
+    <p class="side"><b class="nl">Precision vs reach</b>\(N\) (more defects) buys precision. \(k\) (more agents per defect) buys reach: how far along the curve you can see. One cannot be bought with the other.</p>
+
+    <details class="why"><summary>Fine print: when Eq. (11) is exact</summary>
+      <p>The formula treats each defect's miss probability \(U\) as known. That holds in the paper's testbeds, where the panel is the whole finite pool of agents. When each defect is judged by only \(K\) randomly drawn agents, the panel's own binomial noise adds to the error. The lab below reports both: Eq. (11), and a data-based version of the same delta method that includes panel noise. The two agree as \(K\) grows.</p>
+    </details>
+
+    <figure class="fig" id="fig-calib" data-fig="calibration">
+      <figcaption class="fig-head">
+        <span class="fig-num">Figure 11 · Eq. (11)</span>
+        <span class="fig-title">Calibration lab</span>
+        <p class="fig-desc">Simulate a calibration: \(N\) defects drawn from the population, each judged by \(K\) agents. Left: how many of the \(K\) agents flagged each defect. Right: the estimated miss curve with ±2 standard-error bars against the truth. "Repeat 200 times" shows the actual spread of \(\hat a(j)\).</p>
+      </figcaption>
+      <div class="fig-body"></div>
+      <div class="fig-foot"><div class="try"><b>Try this:</b> pick a strong population (\(a=2\)) and a large \(j\). Watch \(N\,M(2j)\) fall below about 10 and the error bars explode, then raise \(N\) until they recover.</div></div>
+    </figure>
+  </section>
+
+  <section class="sec" id="identification" data-crumb="What data can't tell you">
+    <h3>What calibration can never tell you</h3>
+    <div class="ref"><span>§5</span><span>Theorem 5.1</span><span>Corollary 5.2</span><span>Eq. (12)</span></div>
+
+    <p>Measuring with \(K\) agents tells you \(M(1),\dots,M(K)\). What does that say about \(M(k')\) for a larger team, \(k'>K\)?</p>
+
+    <div class="thm">
+      <div class="thm-h">Theorem 5.1 <em>Sharp partial identification</em></div>
+      <div class="thm-b">
+        <p>Let \(M(1),\dots,M(K)\) be known. The set of values of \(M(k')\), \(k'>K\), consistent with some population is the closed interval</p>
+        <div class="eqx">
+          <div class="eq">\[ \Bigl[\class{t-1}{\min,\max}\Bigr]\; \class{t-2}{\E_{w}[U^{k'}]}\quad\text{s.t.}\quad \class{t-3}{\E_w[U^{k}]=M(k)\ (k\le K)},\ \ \class{t-4}{w\in\cM_1([0,1])}, \]<span class="eq-num">(12)</span></div>
+          <dl class="anatomy">
+            <div class="an" data-t="4" tabindex="0"><dt>\(w\in\cM_1([0,1])\)</dt><dd>Any candidate probability law for \(U=1-\Delta\), that is, any candidate population.</dd></div>
+            <div class="an" data-t="3" tabindex="0"><dt>\(\E_w[U^{k}]=M(k)\)</dt><dd>The candidate must reproduce every moment you measured.</dd></div>
+            <div class="an" data-t="2" tabindex="0"><dt>\(\E_w[U^{k'}]\)</dt><dd>The larger team's miss rate under that candidate.</dd></div>
+            <div class="an" data-t="1" tabindex="0"><dt>\([\min,\max]\)</dt><dd>The range over all candidates. Constraints and objective are linear in \(w\), so this is a linear programme.</dd></div>
+          </dl>
+        </div>
+        <p>a linear programme. The same programme with objective \(w(\{1\})\) gives the sharp interval for \(\pi_0\), and its lower endpoint is \(0\) whenever \((M(k))_{k\le K}\) lies in the interior of the moment cone.</p>
+      </div>
+    </div>
+
+    <p>This is the truncated Hausdorff moment problem. Infinitely many laws on \([0,1]\) share the same first \(K\) moments, and their later moments sweep out an interval. The interval is <em>sharp</em>: every value inside it is the \(M(k')\) of some population consistent with the data. \(w(\{1\})\) is the mass at \(U=1\), which is \(\Delta=0\): the blind spot. The "interior of the moment cone" means the measured values are not on the edge of what is possible, which real data essentially always is not.</p>
+    <p class="side"><b class="nl">A handy equivalence</b>Knowing \(M(1..K)\) is the same as knowing how often exactly \(f\) of \(K\) agents flag a defect, \(f=0..K\). The figure shows that histogram and solves the LP in that form.</p>
+
+    <div class="thm">
+      <div class="thm-h">Corollary 5.2 <em>A blind-spot floor cannot be certified</em></div>
+      <div class="thm-b"><p>Fix \(K\) and \(M(1),\dots,M(K)\) in the interior of the moment cone. The identified set always contains a population with \(\pi_0=0\). Finite calibration therefore cannot certify \(\pi_0>0\), and so cannot establish that more agents would fail to help; nor does it license a point prediction of \(M(k')\) for \(k'>K\), whose identified interval has positive width. It does license the conservative direction: the upper endpoint of (12) bounds \(M(k')\) and hence lower-bounds the horizon a team of size \(k'\) attains.</p></div>
+    </div>
+
+    <p>The two halves are not in tension. <mark class="hl">Bad news, an irreducible blind spot, is unfalsifiable from finite data; good news is certifiable.</mark> Some population with \(\pi_0=0\) always fits the data, so you can never prove more agents will not help. But \(n^*\propto1/M\) is monotone and a guarantee needs only one endpoint: the upper end of the interval bounds \(M(k')\) from above and so bounds the horizon from below.</p>
+    <p>Neither half licenses a point extrapolation. A fitted parametric tail (the log–log slope of \(M\), a Beta mixture, a species-richness estimator) lands somewhere inside the interval and inherits no guarantee from it.</p>
+
+    <figure class="fig" id="fig-identify" data-fig="identify">
+      <figcaption class="fig-head">
+        <span class="fig-num">Figure 12 · Theorem 5.1 · Corollary 5.2</span>
+        <span class="fig-title">What \(K\) agents say about 64</span>
+        <p class="fig-desc">Dots are the moments you measured with \(K\) agents. The shaded band is the exact identified interval for every larger team, from the linear programme (12). The line is the truth, which you would not know. Below: two populations that match your data perfectly yet disagree about \(M(64)\), and the flag-count histogram that the data amount to.</p>
+      </figcaption>
+      <div class="fig-body"></div>
+      <div class="fig-foot"><div class="try"><b>Try this:</b> choose a population with a real blind spot (\(\pi_0=0.4\)). The lower bound for \(\pi_0\) is still exactly 0: the data cannot rule out that more agents would eventually help. Increase \(K\) to watch the band tighten.</div></div>
+    </figure>
+
+    <div class="quiz"><div class="qh">Check yourself</div>
+      <details><summary>Calibration with \(K=8\) agents is consistent with a 30% blind spot. Can you conclude that a team of 64 would not help?</summary><div class="ans">No. A population with \(\pi_0=0\) fits the same data, so the claim is not supported. You can, however, quote the upper end of the interval as a guaranteed lower bound on the 64-agent horizon.</div></details>
+      <details><summary>Why is "good news" certifiable but "bad news" not?</summary><div class="ans">A guarantee on horizon needs only an upper bound on \(M(k')\), which the LP supplies. Proving a blind spot needs a lower bound on \(\pi_0\) above zero, and the LP's lower bound is always zero.</div></details>
+    </div>
+  </section>
+
+  <!-- ============================== PART IV ============================== -->
+  <div class="part-head" id="part4">
+    <span class="pn">Part IV · §6</span>
+    <h2>Choosing who verifies</h2>
+    <p>With a fixed pool of distinct agents, which \(k\) should check the work? Choose for coverage, and know which guarantees survive.</p>
+  </div>
+
+  <section class="sec" id="selection" data-crumb="Choose for coverage">
+    <h3>Choose for coverage</h3>
+    <div class="ref"><span>§6</span><span>Proposition 6.1</span><span>Proposition 6.2</span></div>
+
+    <p>Let a pool of \(m\) distinct agents be available, of which \(k\) will be used. Agent \(i\) has its own \(\Delta_i(\theta)\). The miss rate of team \(S\) and the objective are</p>
+    <div class="eqx">
+      <div class="eq">\[ M(S)=\E_\theta\class{t-1}{\prod_{i\in S}(1-\Delta_i(\theta))},\qquad \class{t-2}{\Lambda(S)=\log\frac{1}{M(S)}}. \]</div>
+      <dl class="anatomy">
+        <div class="an" data-t="1" tabindex="0"><dt>\(\prod_{i\in S}(1-\Delta_i(\theta))\)</dt><dd>Every member of team \(S\) misses defect \(\theta\).</dd></div>
+        <div class="an" data-t="2" tabindex="0"><dt>\(\Lambda(S)\)</dt><dd>The team's coverage exponent. Horizon \(\propto1/M(S)=e^{\Lambda(S)}\), so \(\Lambda\) is linear in log-horizon.</dd></div>
+      </dl>
+    </div>
+    <p>Greedy maximisation of detection \(1-M(S)\) and of \(\Lambda(S)\) pick the same agent at every step, since both simply minimise \(M(S\cup\{e\})\). The algorithm is not in question; the guarantee is. Detection is monotone submodular, so greedy attains \((1-1/e)\) of the optimal detection. But that only implies</p>
+    <div class="eq">\[ M(S_{\mathrm{greedy}})\le e^{-1}+(1-e^{-1})\,M(S^{*}), \]</div>
+    <p>a horizon ratio that tends to 0 as \(M(S^*)\to0\). If the best team misses 1%, the guarantee still allows greedy to miss 37.4%, a horizon 37 times shorter. For horizon it is vacuous.</p>
+
+    <div class="thm">
+      <div class="thm-h">Proposition 6.1 <em>When the exponent is submodular</em></div>
+      <div class="thm-b"><p>If every \(q_i\) is a non-increasing function of a common scalar difficulty \(\theta\) (blind spots are nested rather than complementary), then \(\Lambda\) is monotone submodular, and greedy achieves \(\Lambda(S_{\mathrm{greedy}})\ge(1-1/e)\Lambda(S^{*})\), i.e. a horizon at least \((n^{*}_{\mathrm{OPT}})^{1-1/e}\) up to constants. Without an association condition \(\Lambda\) can be supermodular and greedy arbitrarily bad.</p></div>
+    </div>
+    <p><strong>Submodular</strong> means diminishing returns: adding agent \(e\) to a small team raises \(\Lambda\) at least as much as adding it to a larger team that contains the small one. Nested blind spots give this. If every agent's detection falls as one scalar difficulty rises, a strong agent's catches mostly include a weak agent's catches. <strong>Complementary</strong> blind spots break it. A specialist alone barely moves \(\Lambda\), but the specialist that completes a cover can send \(\Lambda\) to infinity. That is supermodular, and greedy can then be arbitrarily bad.</p>
+    <p>The condition is awkward as well as sufficient. Nested blind spots are the positively associated regime, which is also where ranking agents by individual accuracy already picks well, so the guarantee holds where selection matters least. It is weak in absolute terms too: \((n^{*}_{\mathrm{OPT}})^{1-1/e}\) turns an optimal depth of 100 into a promise of 18. Where selection actually pays (complementary blind spots), \(\Lambda\) can be supermodular and no constant-factor guarantee survives.</p>
+
+    <div class="thm">
+      <div class="thm-h">Proposition 6.2 <em>Accuracy ranking is \(k\) times worse</em></div>
+      <div class="thm-b"><p>For every \(k\) and \(\eta\in(0,1)\) there is a pool of \(2k\) agents in which selecting the \(k\) individually most accurate agents yields miss rate \(\eta\) while the coverage-optimal team of the same size yields \(\eta/k\); the horizon ratio is exactly \(k\).</p></div>
+    </div>
+    <dl class="anatomy">
+      <div class="an"><dt>\(A\)</dt><dd>A common kind of defect, with probability \(1-\eta\).</dd></div>
+      <div class="an"><dt>\(B_1,\dots,B_k\)</dt><dd>Rare kinds, each with probability \(\eta/k\).</dd></div>
+      <div class="an"><dt>generalists</dt><dd>\(k\) agents that detect only \(A\). Each has accuracy \(1-\eta\).</dd></div>
+      <div class="an"><dt>specialist \(j\)</dt><dd>Detects only \(B_j\). Accuracy \(\eta/k\).</dd></div>
+      <div class="an"><dt>top-\(k\) by accuracy</dt><dd>All \(k\) generalists. Together they still miss every \(B\): miss rate \(\eta\).</dd></div>
+      <div class="an"><dt>coverage-optimal</dt><dd>One generalist plus \(k-1\) specialists. Misses only \(B_k\): miss rate \(\eta/k\).</dd></div>
+    </dl>
+    <p>The most accurate agents are redundant with one another. In the paper's testbeds the same thing happens for a mundane reason: <mark class="hl">the most accurate agents come from one role template and inherit its blind spots.</mark></p>
+
+    <figure class="fig" id="fig-teams" data-fig="teams">
+      <figcaption class="fig-head">
+        <span class="fig-num">Figure 13 · Propositions 6.1–6.2</span>
+        <span class="fig-title">Build a verification team</span>
+        <p class="fig-desc">Rows are agents in the pool; columns are kinds of defect, with width proportional to how common each is. A cell's shade is the agent's detection probability for that kind. Click rows to build a team, or use a selection rule. The red bars at the bottom show what the team still misses; their total area is \(M(S)\).</p>
+      </figcaption>
+      <div class="fig-body"></div>
+      <div class="fig-foot"><div class="try"><b>Try this:</b> on the generalists-versus-specialists pool, compare "Most accurate" with "Greedy coverage": the horizon ratio equals \(k\). Then open the nested pool, where the two rules agree and \(\Lambda\) shows no submodularity violations.</div></div>
+    </figure>
+
+    <div class="quiz"><div class="qh">Check yourself</div>
+      <details><summary>Why doesn't greedy's \((1-1/e)\) detection guarantee say anything about horizon?</summary><div class="ans">Horizon depends on \(M(S)\) itself. Reaching \((1-1/e)\) of the best detection still allows a miss rate up to about 0.37 even when the best team misses almost nothing.</div></details>
+      <details><summary>In which kind of pool does ranking by accuracy work fine?</summary><div class="ans">When blind spots are nested (a single difficulty scale). Then stronger agents see a superset of what weaker ones see. That is also exactly where Proposition 6.1's guarantee applies.</div></details>
+    </div>
+  </section>
+
+  <!-- ============================== PART V ============================== -->
+  <div class="part-head" id="part5">
+    <span class="pn">Part V · §7</span>
+    <h2>Evidence from two executable testbeds</h2>
+    <p>Correctness, defects and agent judgements are computed rather than assumed, and nothing is fitted that can be computed.</p>
+  </div>
+
+  <section class="sec" id="experiments" data-crumb="The testbeds">
+    <h3>The testbeds and what they showed</h3>
+    <div class="ref"><span>§7.1</span><span>§7.2</span><span>§7.3</span></div>
+
+    <div class="row2 wide" style="margin-bottom:22px">
+      <div class="callout" style="margin:0"><div class="ct">Testbed A · distributed plan verification</div>
+        <p>A team maintains an assignment to a scale-free constraint network, the standard model of agents holding partial views of a joint solution. Each auditor sees only a <em>scope</em>, the variables it owns, and checks exactly the requirements inside it. A few also hold a private, incorrect requirement, which produces false alarms. A defect is a single-variable slip violating exactly one requirement. Scopes come from a few shared templates, so blind spots are correlated by construction.</p>
+      </div>
+      <div class="callout" style="margin:0"><div class="ct">Testbed B · program verification</div>
+        <p>Artifacts are real Python functions; defects are single-point AST mutants whose behaviour differs from the reference on a large input pool, so "defective" is decided by execution. A verifier is a property-based tester with one sampling strategy and a few generic properties drawn from a shared vocabulary.</p>
+      </div>
+    </div>
+    <p>In each testbed, four populations differ in how much their blind spots overlap. Only their <em>effort</em> is tuned (scope size in A, check completion in B), so all four share one per-agent detection rate. That isolates overlap from accuracy.</p>
+
+    <h4>Miss curves and exponents</h4>
+    <ul class="tight">
+      <li>At identical per-agent accuracy, Testbed A's populations reach miss rates at \(k=64\) spanning about two orders of magnitude.</li>
+      <li>The <em>siloed</em> population's \(a(k)\) stays low and decays to 0, the signature of a blind-spot atom and a direct measurement of the ceiling in Corollary 4.4(i). The <em>diverse</em> population has no atom, crosses \(a=1\), and keeps climbing, so past that size each doubling more than doubles the horizon.</li>
+      <li>Across replicates, accuracy-matched populations differ in measured horizon by about 15×.</li>
+      <li>A stricter control drops the matching: at identical scope size, the diverse population's agents are <em>less</em> accurate than the siloed population's, yet the diverse team misses less. Worse agents, longer horizon.</li>
+      <li>Committees are distinct agents from a finite pool, so predictions use the exact without-replacement curve. Its Hausdorff residuals are non-negative to numerical precision: the model survives the test that could have refuted it.</li>
+    </ul>
+
+    <h4>The horizon law in a running process</h4>
+    <ul class="tight">
+      <li>Each stage a planner edits one variable, slipping with probability \(\beta\); \(k\) agents inspect the change; if any flags, repair follows. Flags come from evaluating the agents' checks and repairs from running their search.</li>
+      <li>Success decays geometrically with depth, as Theorem 4.3 requires: \((1-\hat\kappa)^n\), with \(\hat\kappa\) estimated at depth 1 alone, predicts depths up to 64.</li>
+      <li>Per-stage risk tracks \(\beta M(k)\) across four populations and eight team sizes, over more than a decade of risk.</li>
+      <li>With the repairer restricted to its own scope, per-stage risk flattens while \(\beta M(k)\) keeps falling: the \(\beta(1-\rho)\) term of Eq. (8) takes over. Locality caps what agents can fix, not only what they see, and this second reason adding verifiers stops helping is invisible to any analysis of detection alone.</li>
+    </ul>
+
+    <h4>Re-review, identification, selection</h4>
+    <ul class="tight">
+      <li>Under full re-review the siloed population's success decays toward zero by depth 150 while the diverse one holds. Their partial sums \(\sum_{s\le n}M(ks)\) are 112.6 and 0.80: divergent against convergent, as Theorem 4.6 requires.</li>
+      <li>With false alarms, a competent repairer makes extra verifiers pay monotonically. A scope-limited repairer with measured damage rate \(\beta_r=0.70\) makes risk <em>rise</em> from the first extra verifier (\(k^\dagger=1\)). At \(\beta_r=0.15\), Eq. (10) predicts \(k^\dagger\approx9\) against an exact optimum of 8. The linearisation \(1-M_P(k)\approx k\E[P]\) holds to 7% out to \(k=16\).</li>
+      <li>Calibrating with \(K=8\) agents leaves \(M(64)\) wide open: for the siloed population, anywhere between 0.20 and 0.79, a fourfold uncertainty in horizon. The sharp lower bound on \(\pi_0\) is 0 everywhere, including the two populations whose true blind-spot mass exceeds 0.4. Against the trivial bound \(M(64)\le M(8)\), the LP tightens barely at all where blind spots dominate and about fivefold where they do not.</li>
+      <li>Ranking by individual detection rate costs a factor that grows with team size, because the most accurate agents come from one role template.</li>
+    </ul>
+
+    <figure class="fig" id="fig-results" data-fig="results">
+      <figcaption class="fig-head">
+        <span class="fig-num">Figure 14 · §7.3 (paper's numbers)</span>
+        <span class="fig-title">Selection rules on the broad pool</span>
+        <p class="fig-desc">The same team size, three ways of choosing it, scored by the per-stage risk the fixed team produces in the running process. Values are as reported in the paper.</p>
+      </figcaption>
+      <div class="fig-body"></div>
+      <div class="fig-foot"><div>Coverage-greedy reaches 5× the depth of accuracy ranking. Random selection lands in between, so <b>the ranking, not the absence of optimisation, does the damage.</b> Selection matters least at the extremes: siloed blind spots defeat every team, and in the diverse pool any four or more agents cover the bank.</div></div>
+    </figure>
+
+    <p><strong>Numerical verification.</strong> Independently of the testbeds, every theorem is checked by exhaustive or randomised search over its hypotheses: the scrutiny bound against arbitrary randomised aggregators and the Neyman–Pearson-optimal rule, complete monotonicity and log-convexity, the \(k^{a}\) scaling and the \(a=1\) series criterion, the accuracy–coverage separation, submodularity of \(\Lambda\), the greedy guarantee, coverage of the identified sets, and finiteness of \(k^\dagger\). All pass.</p>
+    <p class="side"><b class="nl">About the numbers</b>Some values in the paper (table entries, replicate counts, error bars) are generated from results files that were not part of the source this course was built from. Those are described in words here; every number quoted is one written out in the paper's text.</p>
+  </section>
+
+  <!-- ============================== PART VI ============================== -->
+  <div class="part-head" id="part6">
+    <span class="pn">Part VI · §8–9</span>
+    <h2>Using it</h2>
+    <p>A measurement protocol you can run on your own agents, the scope of the claims, and how to read published results.</p>
+  </div>
+
+  <section class="sec" id="protocol" data-crumb="Measurement protocol">
+    <h3>A measurement protocol</h3>
+    <div class="ref"><span>§8 Discussion</span></div>
+    <p>All of this needs one calibration set and no new instrumentation.</p>
+    <ol class="tight">
+      <li>Collect \(N\) artifacts with known defects.</li>
+      <li>Have \(k\) agents from the deployment's own design distribution judge each one.</li>
+      <li>Record only \(f_i\), the number that flag defect \(i\).</li>
+      <li>Compute the exact miss curve of a \(j\)-agent team: \[ \widehat M(j)=\frac1N\sum_i\binom{k-f_i}{j}\Big/\binom{k}{j}. \]</li>
+    </ol>
+    <p>Three decisions read off it:</p>
+    <ul class="claims">
+      <li><b>Hire?</b><span>Is the next agent worth adding? Check whether \(\hat a(k)\) is above or below 1.</span></li>
+      <li><b>Extrapolate?</b><span>Is a claim about a larger team supported? Use the identified interval of Theorem 5.1.</span></li>
+      <li><b>Model ok?</b><span>Does the population model hold at all? Check the Hausdorff residuals of Proposition 4.2.</span></li>
+    </ul>
+    <p>\(N\) buys precision and \(k\) buys reach, and the second cannot be bought with the first. Since \(\operatorname{se}(\hat a)\) in (11) scales as \((N\,M(2k))^{-1/2}\), resolving \(\hat a(k)\gtrless1\) to \(\pm0.1\) needs on the order of \(10^{2}/M(2k)\) labelled defects.</p>
+
+    <figure class="fig" id="fig-yourdata" data-fig="yourData">
+      <figcaption class="fig-head">
+        <span class="fig-num">Figure 15 · §8</span>
+        <span class="fig-title">Run the protocol on your own counts</span>
+        <p class="fig-desc">Paste one flag count per defect (how many of your \(K\) agents flagged it), separated by spaces, commas or new lines. The tool estimates the miss curve, tests whether any exchangeable population could have produced the counts (the model check, with sampling noise allowed for by a bootstrap), and bounds what larger teams would miss. Everything runs in your browser. The box starts with example data: 400 simulated defects judged by 8 agents.</p>
+      </figcaption>
+      <div class="fig-body"></div>
+    </figure>
+  </section>
+
+  <section class="sec" id="scope" data-crumb="Scope and reading results">
+    <h3>Scope, and how to read reported results</h3>
+    <div class="ref"><span>§8 Discussion</span></div>
+    <p><strong>Scope.</strong> The conditionally i.i.d. reduction (Lemma 3.1) is exact for teams sampled from a design distribution and approximate for a hand-picked roster. Proposition 4.2 makes it testable, and the testbeds' curves pass, but a deliberately anti-correlated team escapes it, which is the point of selection. The horizon law assumes stage-disjoint writes and flag-gated repair. The testbeds are executable by design, which is what makes validation possible, but it means the numerical \(a\) and \(\pi_0\) are properties of those populations, not of any deployed system.</p>
+    <p><strong>Reading reported results.</strong> The paper measured no language-model team, but the theory makes published disagreements legible.</p>
+    <ul class="tight">
+      <li>Reporting detection over a jury measures \(1-M(k)\), which Proposition 4.2 forces to saturate. Saturation is evidence of nothing beyond exchangeability.</li>
+      <li>Resampling against a fixed imperfect verifier is the \(k=1\) corner, with ceiling \(M(1)\).</li>
+      <li>Teams that scale well are above \(a=1\); teams that do not are below it or up against a blind-spot mass. Both can hold for one architecture on different task distributions, since \(a\) depends on the population <em>and</em> on the defect law \(\mu\).</li>
+    </ul>
+    <div class="callout"><div class="ct">What would falsify the theory</div><p>A deployment whose \(\hat a(k)\) sits well below 1, yet whose reliability improves faster than \(k^{\hat a}\) as the team grows.</p></div>
+  </section>
+
+  <section class="sec" id="conclusion" data-crumb="Conclusion">
+    <h3>Conclusion</h3>
+    <div class="ref"><span>§9</span></div>
+    <p class="conclusion-quote">Adding an agent to a verifying team buys coverage, not opinions. Coverage is a moment curve of the population's discriminative power: it caps what any protocol achieves, converts into a horizon law with matching bounds, and crosses \(a=1\) where team growth and repeated review begin to pay off. Mean accuracy carries none of this. The lesson is a change of question: not <b>how good are our verifiers</b>, but <b>what do they all fail to see</b>.</p>
+  </section>
+
+  <!-- ============================== REFERENCE ============================== -->
+  <div class="part-head" id="reference">
+    <span class="pn">Reference</span>
+    <h2>Symbols, equations, summary</h2>
+    <p>Everything in one place for review.</p>
+  </div>
+
+  <section class="sec" id="glossary" data-crumb="Symbols">
+    <h3>Symbols</h3>
+    <div class="ref"><span>in order of appearance</span></div>
+    <div class="table-wrap">
+      <table class="ref-t gloss">
+        <thead><tr><th>Symbol</th><th>Meaning</th><th>Where</th></tr></thead>
+        <tbody>
+          <tr><td>\(\theta\in\Theta,\ \mu\)</td><td>Hidden state of a defect (which defect, how visible) and its distribution</td><td>§3.1</td></tr>
+          <tr><td>\(v,\ \cD\)</td><td>A verifier agent and the design distribution it is drawn from</td><td>§3.1</td></tr>
+          <tr><td>\(q_v(\theta),\ p_v(\theta)\)</td><td>Agent \(v\)'s flag probability on the defective and on the corrected artifact</td><td>§3.1</td></tr>
+          <tr><td>\(Q(\theta),\ P(\theta)\)</td><td>Population averages of \(q_v\), \(p_v\)</td><td>Eq. (1)</td></tr>
+          <tr><td>\(\Delta(\theta)\)</td><td>Discriminative power \(|Q-P|\)</td><td>Eq. (1)</td></tr>
+          <tr><td>\(U=1-\Delta\)</td><td>Chance one judgement is unmoved by the defect; \(M(k)=\E[U^k]\)</td><td>§3.1</td></tr>
+          <tr><td>\(k\)</td><td>Number of judgements, or team size</td><td>throughout</td></tr>
+          <tr><td>\(M(k)\)</td><td>Miss curve: chance \(k\) judgements are all uninformative</td><td>Eq. (2)</td></tr>
+          <tr><td>\(M_Q,\ M_P\)</td><td>Miss rate of "flag if anyone flags", and its false-alarm analogue</td><td>Def. 3.2</td></tr>
+          <tr><td>\(\pi_0\)</td><td>Blind-spot mass \(\Pr[\Delta=0]\)</td><td>Eq. (2)</td></tr>
+          <tr><td>\(a(k),\ a\)</td><td>Doubling exponent \(\log_2 M(k)/M(2k)\); its limit, the tail exponent of \(\Delta\) at 0</td><td>Eq. (3), Cor. 4.4</td></tr>
+          <tr><td>\(\Lambda(k),\ \Lambda(S)\)</td><td>\(\log 1/M\): coverage on a log scale, for a size or a specific team</td><td>Eq. (3), §6</td></tr>
+          <tr><td>\(n,\ \beta\)</td><td>Pipeline depth; per-stage defect probability</td><td>§3.2</td></tr>
+          <tr><td>\(\varepsilon,\ n^*(\varepsilon)\)</td><td>Risk budget; horizon (largest depth with success \(\ge1-\varepsilon\))</td><td>§3.2, Eq. (6)</td></tr>
+          <tr><td>\(\delta,\ \phi,\ \bar\phi\)</td><td>A protocol's detection and false-alarm rates; the false-alarm budget of A3</td><td>Thm 4.1, A3</td></tr>
+          <tr><td>\(c,\ \Gamma\)</td><td>Tail constant in \(\Pr[\Delta\le t]\approx ct^a\) (Cor. 4.4); per-agent accuracy (Thm 4.5); the gamma function</td><td>Cor. 4.4, Thm 4.5</td></tr>
+          <tr><td>\(J(n)\)</td><td>Total judgements for a depth-\(n\) pipeline</td><td>Cor. 4.4(iii)</td></tr>
+          <tr><td>\(C,\ \zeta(a)\)</td><td>Constant in \(M(k)\asymp Ck^{-a}\); the Riemann zeta function</td><td>§4.4</td></tr>
+          <tr><td>\(\lambda\)</td><td>Fraction of the team refreshed each stage</td><td>§4.4</td></tr>
+          <tr><td>\(\rho,\ \beta_r\)</td><td>Repair success probability; damage probability on a false alarm</td><td>Eq. (8)</td></tr>
+          <tr><td>\(\kappa(k)\)</td><td>Per-stage risk with real repair</td><td>Eq. (8)</td></tr>
+          <tr><td>\(\nabla M(k),\ \tau,\ k^\dagger\)</td><td>\(M(k-1)-M(k)\); break-even ratio; best team size</td><td>Eqs. (9)–(10)</td></tr>
+          <tr><td>\(N,\ f_i,\ \widehat M(j)\)</td><td>Calibration defects; flags on defect \(i\); estimated miss curve</td><td>§5, §8</td></tr>
+          <tr><td>\(V_j,\ V_{2j},\ C_j\)</td><td>Variances and covariance of \(U^j\), \(U^{2j}\) across defects</td><td>Eq. (11)</td></tr>
+          <tr><td>\(K,\ k',\ w\)</td><td>Calibrated team size; target size; a candidate law for \(U\)</td><td>Eq. (12)</td></tr>
+          <tr><td>\(S,\ S^*,\ m\)</td><td>A team, the optimal team, the pool size</td><td>§6</td></tr>
+          <tr><td>\(\eta\)</td><td>Mass of rare defect kinds in the generalist/specialist pool</td><td>Prop. 6.2</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="sec eq-index" id="equations" data-crumb="All twelve equations">
+    <h3>All twelve numbered equations</h3>
+    <div class="ref"><span>numbering as in the paper</span></div>
+    <div class="eqx"><div class="eq">\[ Q(\theta)=\E_{v\sim\cD}q_v(\theta),\quad P(\theta)=\E_{v\sim\cD}p_v(\theta),\quad \Delta=|Q-P| \]<span class="eq-num">(1)</span></div></div>
+    <p>Discriminative power: how much a defect moves one random agent's verdict. <a href="#defects">Section</a></p>
+    <div class="eqx"><div class="eq">\[ M(k)=\E_\theta\bigl[(1-\Delta(\theta))^{k}\bigr],\qquad \pi_0=\Pr[\Delta(\theta)=0] \]<span class="eq-num">(2)</span></div></div>
+    <p>Miss curve and blind-spot mass. <a href="#misscurve">Section</a></p>
+    <div class="eqx"><div class="eq">\[ a(k)=\log_2\frac{M(k)}{M(2k)},\qquad \Lambda(k)=\log\frac{1}{M(k)} \]<span class="eq-num">(3)</span></div></div>
+    <p>Coverage exponent and log-coverage. <a href="#misscurve">Section</a></p>
+    <div class="eqx"><div class="eq">\[ \delta-\phi\le1-M(k) \]<span class="eq-num">(4)</span></div></div>
+    <p>Scrutiny bound: no protocol using \(k\) judgements does better. <a href="#scrutiny">Section</a></p>
+    <div class="eqx"><div class="eq">\[ \Pr[\text{final artifact defective}]\ge1-\bigl(1-\beta(M(k)-\bar\phi)\bigr)^{n} \]<span class="eq-num">(5)</span></div></div>
+    <p>Risk compounds geometrically over stages. <a href="#horizon">Section</a></p>
+    <div class="eqx"><div class="eq">\[ n^{*}(\varepsilon)=\frac{\ln\frac{1}{1-\varepsilon}}{\ln\frac{1}{1-\beta(M(k)-\bar\phi)}}=\Theta\Bigl(\frac{\varepsilon}{\beta M(k)}\Bigr) \]<span class="eq-num">(6)</span></div></div>
+    <p>The horizon law. <a href="#horizon">Section</a></p>
+    <div class="eqx"><div class="eq">\[ \Pr[\text{clean after }n\text{ stages}]=\prod_{s=1}^{n}\bigl(1-\beta M(ks)\bigr) \]<span class="eq-num">(7)</span></div></div>
+    <p>Full re-review by fresh teams. <a href="#rereview">Section</a></p>
+    <div class="eqx"><div class="eq">\[ \kappa(k)=\beta(1-\rho)+\beta\rho M_Q(k)+(1-\beta)\beta_r\bigl(1-M_P(k)\bigr) \]<span class="eq-num">(8)</span></div></div>
+    <p>Per-stage risk with imperfect repair and false alarms. <a href="#teamsize">Section</a></p>
+    <div class="eqx"><div class="eq">\[ \frac{\nabla M_Q(k)}{\nabla M_P(k)}>\tau:=\frac{(1-\beta)\beta_r}{\beta\rho} \]<span class="eq-num">(9)</span></div></div>
+    <p>When the \(k\)-th judgement lowers risk. <a href="#teamsize">Section</a></p>
+    <div class="eqx"><div class="eq">\[ k^{\dagger}\approx\bigl(aC/\tau\E[P]\bigr)^{1/(a+1)} \]<span class="eq-num">(10)</span></div></div>
+    <p>Approximate best team size with independent false alarms. <a href="#teamsize">Section</a></p>
+    <div class="eqx"><div class="eq">\[ \operatorname{se}(\hat a(j))=\frac{1}{\sqrt N\ln2}\Bigl[\tfrac{V_j}{M(j)^2}+\tfrac{V_{2j}}{M(2j)^2}-\tfrac{2C_j}{M(j)M(2j)}\Bigr]^{1/2} \]<span class="eq-num">(11)</span></div></div>
+    <p>Standard error of the estimated exponent. <a href="#calibration">Section</a></p>
+    <div class="eqx"><div class="eq">\[ \Bigl[\min,\max\Bigr]\ \E_w[U^{k'}]\ \text{ s.t. }\ \E_w[U^k]=M(k)\ (k\le K),\ w\in\cM_1([0,1]) \]<span class="eq-num">(12)</span></div></div>
+    <p>The identified set for a larger team's miss rate. <a href="#identification">Section</a></p>
+  </section>
+
+  <section class="sec" id="onepage" data-crumb="The paper on one page">
+    <h3>The paper on one page</h3>
+    <div class="ref"><span>review sheet</span></div>
+    <ol class="onepage">
+      <li><span>A defect has a hidden state \(\theta\). A random agent's verdict moves with probability \(\Delta(\theta)=|Q-P|\).</span></li>
+      <li><span>Given \(\theta\), a random team is \(k\) coin flips. Agents fail together exactly as much as defects differ in visibility.</span></li>
+      <li><span>The miss curve \(M(k)=\E[(1-\Delta)^k]\) is the \(k\)-th moment of \(1-\Delta\). Its doubling exponent \(a(k)\) is the coverage exponent; \(\pi_0\) is its floor.</span></li>
+      <li><span>No protocol using \(k\) judgements gets detection minus false alarms above \(1-M(k)\). Debate reshuffles judgements; it does not create them.</span></li>
+      <li><span>Every miss curve is completely monotone and log-convex, so detection always saturates. Measured curves that violate this refute the model.</span></li>
+      <li><span>Safe depth is \(n^*\approx\varepsilon/(\beta M(k))\), and that is tight.</span></li>
+      <li><span>A blind spot caps depth at about \(\varepsilon/(\beta\pi_0)\). A power tail gives \(n^*\propto k^{a}\) and cost \(\propto n^{1+1/a}\). Above \(a=1\), each agent buys more horizon than the last.</span></li>
+      <li><span>Per-agent accuracy says nothing about \(a\): any accuracy is compatible with any exponent.</span></li>
+      <li><span>Re-reviewing everything with fresh teams keeps a pipeline clean forever iff \(\sum M(ks)\lt\infty\), i.e. \(a>1\). Team size cannot change this; fixed rosters never help.</span></li>
+      <li><span>False alarms and damaging repairs make a finite team size optimal: stop when \(\nabla M_Q/\nabla M_P\) falls below \(\tau\).</span></li>
+      <li><span>\(N\) defects buy precision, \(k\) agents buy reach. You need \(N\,M(2k)\gg1\).</span></li>
+      <li><span>Calibrating with \(K\) agents identifies larger teams only up to an interval. A blind spot can never be certified; a horizon lower bound can.</span></li>
+      <li><span>Choose teams for coverage \(\Lambda(S)\). Greedy's \((1-1/e)\) guarantee is vacuous for horizon, and accuracy ranking can be \(k\) times worse.</span></li>
+    </ol>
+    <div class="footer">Built from the paper's LaTeX source. Every figure computes in your browser from the paper's formulas or by direct simulation; nothing is pre-rendered. Proofs are in the paper.</div>
+  </section>
+
+  </div>
+  </main>
+</div>
+
+<noscript><p class="noscript">The figures on this page need JavaScript.</p></noscript>
+
+<script>
+window.MathJax = {
+  loader: { load: ['[tex]/html'] },
+  tex: {
+    packages: { '[+]': ['html'] },
+    inlineMath: [['\\(', '\\)']],
+    displayMath: [['\\[', '\\]']],
+    macros: { E: '\\mathbb{E}', Pr: '\\mathbb{P}', cD: '\\mathcal{D}', cP: '\\mathcal{P}', cM: '\\mathcal{M}' }
+  },
+  svg: { fontCache: 'global' },
+  options: { enableMenu: false },
+  startup: {
+    pageReady() {
+      return MathJax.startup.defaultPageReady().then(function () {
+        document.documentElement.classList.add('mj-ready');
+        if (window.App && App.afterMath) App.afterMath();
+      });
+    }
+  }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<script src="js/core.js"></script>
+<script src="js/plot.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/fig-model.js"></script>
+<script src="js/fig-buy.js"></script>
+<script src="js/fig-measure.js"></script>
+<script src="js/main.js"></script>
